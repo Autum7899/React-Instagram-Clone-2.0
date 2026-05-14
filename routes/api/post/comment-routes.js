@@ -7,7 +7,7 @@ const app = require('express').Router(),
   upload = require('multer')({
     dest: `${root}/dist/temp/`,
   }),
-  { ProcessImage, DeleteAllOfFolder } = require('handy-image-processor'),
+  { ProcessImage, DeleteAllOfFolder } = require('../../../config/ImageProcessor'),
   { unlinkSync, createReadStream, createWriteStream } = require('fs')
 
 // COMMENT TEXT [REQ = POST, TEST]

@@ -32,7 +32,7 @@ app.post('/admin/get-stats', mw.AdminOnly, async (req, res) => {
     let [{ total_follows }] = await db.query('SELECT COUNT(follow_id) AS total_follows FROM follow_system')
     let [{ total_shares }] = await db.query('SELECT COUNT(share_id) AS total_shares FROM shares')
     let [{ total_conversations }] = await db.query('SELECT COUNT(con_id) AS total_conversations FROM conversations')
-    let [{ total_groups }] = await db.query('SELECT COUNT(group_id) AS total_groups FROM groups')
+    let [{ total_groups }] = await db.query('SELECT COUNT(group_id) AS total_groups FROM \`groups\`')
     let [{ total_notifications }] = await db.query('SELECT COUNT(notify_id) AS total_notifications FROM notifications')
 
     // Friend request stats

@@ -6,7 +6,7 @@ const app = require('express').Router(),
   upload = require('multer')({
     dest: `${root}/dist/temp/`,
   }),
-  { ProcessImage, DeleteAllOfFolder } = require('handy-image-processor'),
+  { ProcessImage, DeleteAllOfFolder } = require('../../config/ImageProcessor'),
   { catchError } = require('../../config/db')
 
 // GET AVATARS

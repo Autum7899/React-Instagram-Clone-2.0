@@ -51,7 +51,7 @@ app.post('/get-photos-to-explore', async (req, res) => {
 app.post('/get-groups-to-explore', async (req, res) => {
   let { id } = req.session,
     _groups = await db.query(
-      'SELECT group_id, name, admin, created FROM groups ORDER BY RAND()'
+      'SELECT group_id, name, admin, created FROM \`groups\` ORDER BY RAND()'
     ),
     groups = []
 

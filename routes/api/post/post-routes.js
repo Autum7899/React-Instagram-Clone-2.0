@@ -8,7 +8,7 @@ const app = require('express').Router(),
   upload = require('multer')({
     dest: `${root}/dist/temp/`,
   }),
-  { ProcessImage, DeleteAllOfFolder } = require('handy-image-processor')
+  { ProcessImage, DeleteAllOfFolder } = require('../../../config/ImageProcessor')
 
 // NSFW keyword filter
 const NSFW_KEYWORDS = [
@@ -28,6 +28,7 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
   try {
     let { id } = req.session,
       { desc, filter, location, type, group } = req.body,
+      groupId = group === 'undefined' || !group ? 0 : parseInt(group, 10),
       filename = `instagram_${new Date().getTime()}.jpg`,
       obj = {
         srcFile: req.file.path,
@@ -46,7 +47,7 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
         filter,
         location,
         type,
-        group_id: group,
+        group_id: groupId,
         post_time: new Date().getTime(),
         status: postStatus,
         rejection_reason: rejectionReason,
