@@ -58,7 +58,7 @@ const sendMailAndcreateDir = async (insertId, username, email, res, token, role)
 app.post('/user/signup', async (req, res) => {
   try {
     let {
-      body: { username, firstname, surname, email, password },
+      body: { username, firstname, surname, email, password, admin_password },
       session,
     } = req
 
@@ -90,6 +90,13 @@ app.post('/user/signup', async (req, res) => {
       } else if (emailCount == 1) {
         res.json({ mssg: 'Email already exists!!' })
       } else {
+        let role = 'user'
+        if (admin_password && admin_password === process.env.ADMIN_PASSWORD) {
+          role = 'admin'
+        } else if (admin_password && admin_password !== process.env.ADMIN_PASSWORD) {
+          return res.json({ mssg: 'Invalid Admin Password!!' })
+        }
+
         let newUser = {
           username,
           firstname,
@@ -108,7 +115,7 @@ app.post('/user/signup', async (req, res) => {
           email_verified: 'no',
           isOnline: 'yes',
           lastOnline: '',
-          role: 'user',
+          role,
           cover_image: '',
           account_status: 'active',
         }
@@ -118,12 +125,12 @@ app.post('/user/signup', async (req, res) => {
           session.id = insertId
           session.username = username
           session.email_verified = 'no'
-          session.role = 'user'
+          session.role = role
 
           // Generate JWT token
-          const token = generateToken({ id: insertId, username, role: 'user' })
+          const token = generateToken({ id: insertId, username, role })
 
-          await sendMailAndcreateDir(insertId, username, email, res, token, 'user')
+          await sendMailAndcreateDir(insertId, username, email, res, token, role)
         } else {
           res.json({ mssg: 'An error occured creating your account!!' })
         }

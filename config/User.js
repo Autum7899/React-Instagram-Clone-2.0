@@ -21,7 +21,7 @@ const getId = async username => {
   let s = await db.query('SELECT id FROM users WHERE username=? LIMIT 1', [
     username,
   ])
-  return s ? s[0].id : null
+  return s && s.length > 0 ? s[0].id : null
 }
 
 /**
