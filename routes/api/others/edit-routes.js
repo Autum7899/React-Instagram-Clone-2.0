@@ -21,6 +21,7 @@ app.post('/edit-profile', async (req, res) => {
     username,
     firstname,
     surname,
+    nickname,
     email,
     bio,
     twitter,
@@ -55,11 +56,12 @@ app.post('/edit-profile', async (req, res) => {
     req.session.username = username
 
     await db.query(
-      'UPDATE users SET username=?, firstname=?, surname=?, email=?, bio=?, instagram=?, twitter=?, github=?, facebook=?, website=?, phone=? WHERE id=?',
+      'UPDATE users SET username=?, firstname=?, surname=?, nickname=?, email=?, bio=?, instagram=?, twitter=?, github=?, facebook=?, website=?, phone=? WHERE id=?',
       [
         username,
         firstname,
         surname,
+        nickname || '',
         email,
         bio,
         instagram,

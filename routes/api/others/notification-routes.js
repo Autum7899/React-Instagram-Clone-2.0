@@ -2,9 +2,10 @@
 
 const app = require('express').Router(),
   db = require('../../../config/db'),
-  User = require('../../../config/User')
+  User = require('../../../config/User'),
+  { emitNotification } = require('../../../config/Socket')
 
-// NTIFIES THE SPECIFIED USER [REQ = TO, TYPE, POST_ID, GROUP_ID, USER]
+// NOTIFIES THE SPECIFIED USER [REQ = TO, TYPE, POST_ID, GROUP_ID, USER]
 app.post('/notify', async (req, res) => {
   let { to, type, post_id, group_id, user } = req.body,
     insert = {
@@ -18,10 +19,24 @@ app.post('/notify', async (req, res) => {
     }
 
   await db.query('INSERT INTO notifications SET ?', insert)
+
+  // Emit realtime notification via Socket.io
+  let notify_by_username = await User.getWhat('username', req.session.id)
+  emitNotification(to, {
+    type,
+    notify_by: req.session.id,
+    notify_by_username,
+    post_id,
+    group_id,
+    user,
+    notify_time: insert.notify_time,
+  })
+
   res.json({ mssg: 'Notified!!' })
 })
 
 // RETURNS USER'S NOTIFICATIONS
+// Now includes friend_request, friend_accept, post_approved, post_rejected types
 app.post('/get-notifications', async (req, res) => {
   let { id } = req.session,
     notifications = await db.query(

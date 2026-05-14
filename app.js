@@ -11,6 +11,7 @@ require('dotenv').config()
 // Require Dependencies
 const express = require('express'),
   app = express(),
+  http = require('http'),
   {
     env: { PORT, SESSION_SECRET_LETTER },
   } = process,
@@ -26,6 +27,7 @@ const express = require('express'),
 // Project Files
 const { variables } = require('./config/Middlewares')
 const AppRoutes = require('./app-routes')
+const { initSocket } = require('./config/Socket')
 
 // View engine
 app.engine(
@@ -62,5 +64,9 @@ app.use(variables)
 // App routes
 AppRoutes(app)
 
+// Create HTTP server and initialize Socket.io
+const server = http.createServer(app)
+initSocket(server)
+
 // Listening to PORT
-app.listen(PORT, () => rainbow('App running..'))
+server.listen(PORT, () => rainbow('App running..'))

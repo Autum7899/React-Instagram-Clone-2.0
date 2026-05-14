@@ -236,6 +236,45 @@ const mentionUsers = async (str, session, post, when) => {
   }
 }
 
+/**
+ * Returns the role of a user
+ * @param {Number} id User ID
+ * @returns {String} 'user' or 'admin'
+ */
+const getRole = async (id) => {
+  let s = await db.query('SELECT role FROM users WHERE id=? LIMIT 1', [id])
+  return s && s[0] ? s[0].role : 'user'
+}
+
+/**
+ * Returns whether user is an admin
+ * @param {Number} id User ID
+ * @returns {Boolean} true if admin
+ */
+const isUserAdmin = async (id) => {
+  let role = await getRole(id)
+  return role === 'admin'
+}
+
+/**
+ * Updates account status (active, locked, deleted)
+ * @param {Number} id User ID
+ * @param {String} status New status
+ */
+const updateAccountStatus = async (id, status) => {
+  await db.query('UPDATE users SET account_status=? WHERE id=?', [status, id])
+}
+
+/**
+ * Gets account status
+ * @param {Number} id User ID
+ * @returns {String} account status
+ */
+const getAccountStatus = async (id) => {
+  let s = await db.query('SELECT account_status FROM users WHERE id=? LIMIT 1', [id])
+  return s && s[0] ? s[0].account_status : 'active'
+}
+
 module.exports = {
   getId,
   getWhat,
@@ -248,4 +287,8 @@ module.exports = {
   deactivate,
   mutualUsers,
   mentionUsers,
+  getRole,
+  isUserAdmin,
+  updateAccountStatus,
+  getAccountStatus,
 }

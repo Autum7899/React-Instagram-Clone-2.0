@@ -74,4 +74,55 @@ app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
   }
 })
 
+// UPLOAD COVER IMAGE [REQ = COVER(FILE)]
+app.post('/upload-cover-image', upload.single('cover'), async (req, res) => {
+  try {
+    let { file, session } = req,
+      filename = `cover_${new Date().getTime()}.jpg`,
+      dest = `${root}/dist/users/${session.id}/cover.jpg`,
+      obj = {
+        srcFile: file.path,
+        width: 820,
+        height: 312,
+        destFile: dest,
+      }
+
+    await ProcessImage(obj)
+    DeleteAllOfFolder(`${root}/dist/temp/`)
+
+    // Update cover_image field in database
+    const db = require('../../config/db')
+    await db.query('UPDATE users SET cover_image=? WHERE id=?', ['cover.jpg', session.id])
+
+    res.json({
+      success: true,
+      mssg: 'Cover image updated!!',
+    })
+  } catch (error) {
+    catchError(error, res)
+  }
+})
+
+// REMOVE COVER IMAGE
+app.post('/remove-cover-image', async (req, res) => {
+  try {
+    let { id } = req.session
+    const db = require('../../config/db')
+    await db.query('UPDATE users SET cover_image=? WHERE id=?', ['', id])
+
+    // Try to delete the file
+    const coverPath = `${root}/dist/users/${id}/cover.jpg`
+    if (fs.existsSync(coverPath)) {
+      fs.unlinkSync(coverPath)
+    }
+
+    res.json({
+      success: true,
+      mssg: 'Cover image removed!!',
+    })
+  } catch (error) {
+    catchError(error, res)
+  }
+})
+
 module.exports = app

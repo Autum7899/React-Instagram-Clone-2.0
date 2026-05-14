@@ -10,6 +10,19 @@ const app = require('express').Router(),
   }),
   { ProcessImage, DeleteAllOfFolder } = require('handy-image-processor')
 
+// NSFW keyword filter
+const NSFW_KEYWORDS = [
+  'nsfw', 'xxx', 'porn', 'nude', 'naked', 'explicit',
+  'gore', 'violence', 'abuse', 'drug', 'illegal',
+]
+
+const checkNSFW = (text) => {
+  if (!text) return { isNSFW: false, flaggedWords: [] }
+  const lower = text.toLowerCase()
+  const flaggedWords = NSFW_KEYWORDS.filter(word => lower.includes(word))
+  return { isNSFW: flaggedWords.length > 0, flaggedWords }
+}
+
 // POST [REQ = DESC, FILTER, LOCATION, TYPE, GROUP, IMAGE(FILE) ]
 app.post('/post-it', upload.single('image'), async (req, res) => {
   try {
@@ -19,8 +32,14 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
       obj = {
         srcFile: req.file.path,
         destFile: `${root}/dist/posts/${filename}`,
-      },
-      insert = {
+      }
+
+    // Check for NSFW content
+    const nsfwResult = checkNSFW(desc)
+    const postStatus = nsfwResult.isNSFW ? 'rejected' : 'pending'
+    const rejectionReason = nsfwResult.isNSFW ? `Flagged for inappropriate content: ${nsfwResult.flaggedWords.join(', ')}` : ''
+
+    let insert = {
         user: id,
         description: desc,
         imgSrc: filename,
@@ -29,6 +48,8 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
         type,
         group_id: group,
         post_time: new Date().getTime(),
+        status: postStatus,
+        rejection_reason: rejectionReason,
       }
 
     await ProcessImage(obj)
@@ -41,13 +62,19 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
     await db.toHashtag(desc, id, insertId)
     await User.mentionUsers(desc, id, insertId, 'post')
 
+    let responseMsg = nsfwResult.isNSFW
+      ? 'Post rejected due to inappropriate content!'
+      : 'Posted! Your post is pending admin approval.'
+
     res.json({
-      success: true,
-      mssg: 'Posted!!',
+      success: !nsfwResult.isNSFW,
+      mssg: responseMsg,
       post_id: insertId,
       firstname,
       surname,
       filename,
+      status: postStatus,
+      nsfw_flagged: nsfwResult.isNSFW,
     })
   } catch (error) {
     db.catchError(error, res)

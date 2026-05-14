@@ -8,7 +8,8 @@ const app = require('express').Router(),
   fs = require('fs'),
   { promisify } = require('util'),
   { success } = require('handy-log'),
-  mw = require('../../config/Middlewares')
+  mw = require('../../config/Middlewares'),
+  { generateToken } = require('../../config/JWT')
 
 // USER SIGNUP GET ROUTE
 app.get('/signup', mw.NotLoggedIn, (req, res) => {
@@ -16,7 +17,7 @@ app.get('/signup', mw.NotLoggedIn, (req, res) => {
   res.render('signup', { options })
 })
 
-const sendMailAndcreateDir = async (insertId, username, email, res) => {
+const sendMailAndcreateDir = async (insertId, username, email, res, token, role) => {
   let mkdir = promisify(fs.mkdir)
 
   await mkdir(`${dir}/dist/users/${insertId}`)
@@ -40,11 +41,15 @@ const sendMailAndcreateDir = async (insertId, username, email, res) => {
     res.json({
       mssg: `Hello, ${username}!!`,
       success: true,
+      token,
+      role,
     })
   } catch (error) {
     res.json({
       mssg: `Hello, ${username}. Mail could not be sent!!`,
       success: true,
+      token,
+      role,
     })
   }
 }
@@ -89,11 +94,23 @@ app.post('/user/signup', async (req, res) => {
           username,
           firstname,
           surname,
+          nickname: '',
           email,
           password,
-          joined: new Date().getTime(),
+          bio: '',
+          instagram: '',
+          twitter: '',
+          facebook: '',
+          github: '',
+          website: '',
+          phone: '',
+          joined: new Date().getTime().toString(),
           email_verified: 'no',
           isOnline: 'yes',
+          lastOnline: '',
+          role: 'user',
+          cover_image: '',
+          account_status: 'active',
         }
         let { insertId, affectedRows } = await User.create_user(newUser)
 
@@ -101,8 +118,12 @@ app.post('/user/signup', async (req, res) => {
           session.id = insertId
           session.username = username
           session.email_verified = 'no'
+          session.role = 'user'
 
-          await sendMailAndcreateDir(insertId, username, email, res)
+          // Generate JWT token
+          const token = generateToken({ id: insertId, username, role: 'user' })
+
+          await sendMailAndcreateDir(insertId, username, email, res, token, 'user')
         } else {
           res.json({ mssg: 'An error occured creating your account!!' })
         }
