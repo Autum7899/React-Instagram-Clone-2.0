@@ -22,10 +22,13 @@ let updatedFiles = 0;
 files.forEach(file => {
   let content = fs.readFileSync(file, 'utf8');
   let newContent = content
-    .replace(/FROM groups\b/g, "FROM `groups`")
-    .replace(/INTO groups\b/g, "INTO `groups`")
-    .replace(/UPDATE groups\b/g, "UPDATE `groups`");
-    
+    .replace(/FROM\s+\\?`?groups\\?`?\b/g, 'FROM groups')
+    .replace(/INTO\s+\\?`?groups\\?`?\b/g, 'INTO groups')
+    .replace(/UPDATE\s+\\?`?groups\\?`?\b/g, 'UPDATE groups')
+    .replace(/FROM groups\b/g, 'FROM \\`groups\\`')
+    .replace(/INTO groups\b/g, 'INTO \\`groups\\`')
+    .replace(/UPDATE groups\b/g, 'UPDATE \\`groups\\`');
+
   if (content !== newContent) {
     fs.writeFileSync(file, newContent, 'utf8');
     console.log('Fixed:', file);

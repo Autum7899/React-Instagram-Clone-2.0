@@ -36,14 +36,16 @@ export const addPost = async options => {
     user = Number(uData('session')),
     username = uData('username'),
     form = new FormData(),
-    file = await imageCompressor(targetFile),
+    file = targetFile ? await imageCompressor(targetFile) : null,
     action = new Action('.p_post')
 
   action.start()
   wait()
 
   form.append('desc', desc)
-  form.append('image', file)
+  if (file) {
+    form.append('image', file)
+  }
   form.append('filter', filter)
   form.append('location', location)
   form.append('type', type)

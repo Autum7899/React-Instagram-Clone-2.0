@@ -29,16 +29,19 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
     let { id } = req.session,
       { desc, filter, location, type, group } = req.body,
       groupId = group === 'undefined' || !group ? 0 : parseInt(group, 10),
-      filename = `instagram_${new Date().getTime()}.jpg`,
-      obj = {
+      filename = req.file ? `instagram_${new Date().getTime()}.jpg` : '',
+      obj = req.file ? {
         srcFile: req.file.path,
         destFile: `${root}/dist/posts/${filename}`,
-      }
+      } : null
 
     // Check for NSFW content
     const nsfwResult = checkNSFW(desc)
-    const postStatus = nsfwResult.isNSFW ? 'rejected' : 'pending'
-    const rejectionReason = nsfwResult.isNSFW ? `Flagged for inappropriate content: ${nsfwResult.flaggedWords.join(', ')}` : ''
+    const postStatus = 'pending'
+    const rejectionReason = nsfwResult.isNSFW ? `NSFW Review needed: ${nsfwResult.flaggedWords.join(', ')}` : ''
+    if (nsfwResult.isNSFW) {
+      desc = desc ? `${desc} #nsfw` : '#nsfw'
+    }
 
     let insert = {
         user: id,
@@ -53,8 +56,10 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
         rejection_reason: rejectionReason,
       }
 
-    await ProcessImage(obj)
-    DeleteAllOfFolder(`${root}/dist/temp/`)
+    if (obj) {
+      await ProcessImage(obj)
+      DeleteAllOfFolder(`${root}/dist/temp/`)
+    }
 
     let { insertId } = await db.query('INSERT INTO posts SET ?', insert),
       firstname = await User.getWhat('firstname', id),
@@ -64,11 +69,11 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
     await User.mentionUsers(desc, id, insertId, 'post')
 
     let responseMsg = nsfwResult.isNSFW
-      ? 'Post rejected due to inappropriate content!'
+      ? 'Posted! Your post is flagged as NSFW and is pending admin review.'
       : 'Posted! Your post is pending admin approval.'
 
     res.json({
-      success: !nsfwResult.isNSFW,
+      success: true,
       mssg: responseMsg,
       post_id: insertId,
       firstname,
