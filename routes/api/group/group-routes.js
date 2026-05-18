@@ -94,7 +94,7 @@ app.post('/get-group-details', async (req, res) => {
       [grp_id]
     ),
     [{ postsCount }] = await db.query(
-      'SELECT COUNT(post_id) AS postsCount FROM posts WHERE group_id=?',
+      "SELECT COUNT(post_id) AS postsCount FROM posts WHERE group_id=? AND status='approved'",
       [grp_id]
     )
 

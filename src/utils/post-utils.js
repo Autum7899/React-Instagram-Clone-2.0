@@ -1,6 +1,6 @@
 import { post } from 'axios'
 import Notify from 'handy-notification'
-import { addGroupPost, addUserPost } from '../actions/post'
+
 import { imageCompressor, insta_notify, Me, uData, wait } from './utils'
 import * as PostActions from '../actions/post'
 import d from './API/DOM'
@@ -52,7 +52,7 @@ export const addPost = async options => {
   form.append('group', group)
 
   let {
-    data: { success, mssg, post_id, firstname, surname, filename },
+    data: { success, mssg, post_id },
   } = await post('/api/post-it', form)
   await post('/api/tag-post', { tags, post_id })
 
@@ -64,45 +64,9 @@ export const addPost = async options => {
     })
   })
 
-  if (success) {
-    let newPost = {
-      key: post_id,
-      comments_count: 0,
-      likes_count: 0,
-      shares_count: 0,
-      tags_count: tags.length,
-      user,
-      username,
-      firstname,
-      surname,
-      description: desc,
-      filter,
-      imgSrc: filename,
-      location,
-      post_time: `${new Date().getTime()}`,
-      post_id,
-      group_id: 0,
-      group_name: '',
-      type: 'user',
-    }
-
-    type == 'user'
-      ? dispatch(
-          addUserPost({
-            ...newPost,
-            when: 'feed',
-          })
-        )
-      : dispatch(
-          addGroupPost({
-            ...newPost,
-            group_id: group,
-            group_name,
-            type: 'group',
-            when: 'groupPosts',
-          })
-        )
-  }
+  // Posts are always created as "pending" and require admin approval.
+  // Do NOT add to the Redux store immediately — they should only appear
+  // in the feed/profile once an admin approves them.
 
   action.end()
   Notify({ value: mssg })

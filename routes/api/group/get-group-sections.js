@@ -22,13 +22,13 @@ app.post('/get-user-groups', async (req, res) => {
 
 // GET GROUP POSTS [REQ = GROUP]
 app.post('/get-group-posts', async (req, res) => {
-  let _posts = await db.query(
-      'SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, g.name AS group_name, posts.post_time FROM posts, \`groups\` g, users WHERE posts.group_id=? AND posts.user = users.id AND posts.group_id = g.group_id AND posts.type=? ORDER BY posts.post_time DESC',
-      [req.body.group, 'group']
-    ),
-    posts = []
+  try {
+    const sessionId = req.session.id
+    const sql = "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, g.name AS group_name, posts.post_time, posts.status, posts.rejection_reason FROM posts, `groups` g, users WHERE posts.group_id=? AND posts.user = users.id AND posts.group_id = g.group_id AND posts.type=? AND (posts.status='approved' OR posts.user=?) ORDER BY posts.post_time DESC"
+    const _posts = await db.query(sql, [req.body.group, 'group', sessionId])
+    const posts = []
 
-  for (let p of _posts) {
+    for (let p of _posts) {
     let {
       tags_count,
       likes_count,
@@ -44,18 +44,25 @@ app.post('/get-group-posts', async (req, res) => {
       comments_count,
     })
   }
-
-  res.json(posts)
+    res.json(posts)
+  } catch (error) {
+    db.catchError(error, res)
+  }
 })
 
 // GET GROUP PHOTOS [REQ = GROUP]
 app.post('/get-group-photos', async (req, res) => {
-  let photos = await db.query(
-    'SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.imgSrc AS imgsrc, posts.filter, posts.post_time FROM posts, users WHERE posts.group_id = ? AND posts.user = users.id ORDER BY posts.post_time DESC',
-    [req.body.group]
-  )
+  try {
+    const sessionId = req.session.id
+    const photos = await db.query(
+      "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.imgSrc AS imgsrc, posts.filter, posts.post_time, posts.status FROM posts, users WHERE posts.group_id = ? AND posts.user = users.id AND (posts.status='approved' OR posts.user=?) ORDER BY posts.post_time DESC",
+      [req.body.group, sessionId]
+    )
 
-  res.json(photos)
+    res.json(photos)
+  } catch (error) {
+    db.catchError(error, res)
+  }
 })
 
 // GET GROUP MEMBERS [REQ = GRP_ID]

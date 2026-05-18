@@ -40,7 +40,7 @@ app.post('/get-users-to-explore', async (req, res) => {
 app.post('/get-photos-to-explore', async (req, res) => {
   let { id } = req.session,
     photos = await db.query(
-      'SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.imgSrc AS imgsrc, posts.filter, posts.post_time FROM posts, users WHERE posts.user <> ? AND posts.user = users.id ORDER BY RAND() DESC LIMIT 10',
+      "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.imgSrc AS imgsrc, posts.filter, posts.post_time FROM posts, users WHERE posts.user <> ? AND posts.user = users.id AND posts.status='approved' ORDER BY RAND() DESC LIMIT 10",
       [id]
     )
 
