@@ -141,6 +141,243 @@ app.post('/admin/get-users', mw.AdminOnly, async (req, res) => {
   }
 })
 
+// CREATE USER (Admin)
+app.post('/admin/create-user', mw.AdminOnly, async (req, res) => {
+  try {
+    let {
+      username,
+      firstname,
+      surname,
+      email,
+      password,
+      role,
+      account_status,
+      account_type,
+    } = req.body
+
+    const replacer = /[^a-z0-9_.@$#]/g
+    username = (username || '').replace(replacer, '')
+    firstname = (firstname || '').replace(replacer, '')
+    surname = (surname || '').replace(replacer, '')
+
+    req.body.username = username
+    req.body.firstname = firstname
+    req.body.surname = surname
+
+    db.c_validator('username', req)
+    db.c_validator('firstname', req)
+    db.c_validator('surname', req)
+    req.checkBody('email', 'Email is empty!!').notEmpty()
+    req.checkBody('email', 'Invalid email!!').isEmail()
+    req.checkBody('password', 'Password field is empty').notEmpty()
+
+    let errors = await req.getValidationResult()
+    if (!errors.isEmpty()) {
+      let array = []
+      errors.array().forEach(e => array.push(e.msg))
+      return res.json({ mssg: array })
+    }
+
+    let [{ usernameCount }] = await db.query(
+      'SELECT COUNT(username) as usernameCount from users WHERE username=?',
+      [username]
+    )
+    let [{ emailCount }] = await db.query(
+      'SELECT COUNT(email) as emailCount from users WHERE email=?',
+      [email]
+    )
+
+    if (usernameCount == 1) {
+      return res.json({ mssg: 'Username already exists!!' })
+    }
+    if (emailCount == 1) {
+      return res.json({ mssg: 'Email already exists!!' })
+    }
+
+    const normalizedRole = role === 'admin' ? 'admin' : 'user'
+    const normalizedStatus = ['active', 'locked', 'deleted'].includes(
+      account_status
+    )
+      ? account_status
+      : 'active'
+    const normalizedAccountType = ['public', 'private'].includes(account_type)
+      ? account_type
+      : 'public'
+
+    let newUser = {
+      username,
+      firstname,
+      surname,
+      nickname: '',
+      email,
+      password,
+      bio: '',
+      instagram: '',
+      twitter: '',
+      facebook: '',
+      github: '',
+      website: '',
+      phone: '',
+      joined: new Date().getTime().toString(),
+      email_verified: 'no',
+      account_type: normalizedAccountType,
+      isOnline: 'no',
+      lastOnline: '',
+      role: normalizedRole,
+      cover_image: '',
+      account_status: normalizedStatus,
+    }
+
+    let { insertId, affectedRows } = await User.create_user(newUser)
+
+    if (affectedRows == 1) {
+      return res.json({
+        success: true,
+        mssg: `User ${username} created!`,
+        user_id: insertId,
+      })
+    }
+
+    res.json({ mssg: 'An error occured creating this account!!' })
+  } catch (error) {
+    db.catchError(error, res)
+  }
+})
+
+// UPDATE USER (Admin)
+app.post('/admin/update-user', mw.AdminOnly, async (req, res) => {
+  try {
+    let {
+      user_id,
+      username,
+      firstname,
+      surname,
+      nickname,
+      email,
+      role,
+      account_status,
+      account_type,
+      password,
+    } = req.body
+
+    if (!user_id) {
+      return res.json({ mssg: 'User ID is required!' })
+    }
+
+    let [current] = await db.query(
+      'SELECT id, username, firstname, surname, nickname, email, role, account_status, account_type FROM users WHERE id=? LIMIT 1',
+      [user_id]
+    )
+
+    if (!current) {
+      return res.json({ mssg: 'User not found!' })
+    }
+
+    const adminId = req.session.id
+    const replacer = /[^a-z0-9_.@$#]/g
+
+    const nextUsername =
+      typeof username === 'string' && username.length
+        ? username.replace(replacer, '')
+        : current.username
+    const nextFirstname =
+      typeof firstname === 'string' && firstname.length
+        ? firstname.replace(replacer, '')
+        : current.firstname
+    const nextSurname =
+      typeof surname === 'string' && surname.length
+        ? surname.replace(replacer, '')
+        : current.surname
+    const nextNickname = typeof nickname === 'string' ? nickname : current.nickname
+    const nextEmail =
+      typeof email === 'string' && email.length ? email : current.email
+    const nextRole = ['user', 'admin'].includes(role) ? role : current.role
+    const nextStatus = ['active', 'locked', 'deleted'].includes(account_status)
+      ? account_status
+      : current.account_status
+    const nextAccountType = ['public', 'private'].includes(account_type)
+      ? account_type
+      : current.account_type
+
+    if (String(user_id) === String(adminId)) {
+      if (nextRole !== current.role) {
+        return res.json({ mssg: 'Cannot change your own role!' })
+      }
+      if (nextStatus !== current.account_status) {
+        return res.json({ mssg: 'Cannot change your own account status!' })
+      }
+    }
+
+    if (current.role === 'admin' && String(user_id) !== String(adminId)) {
+      if (nextRole !== 'admin' || nextStatus !== 'active') {
+        return res.json({ mssg: 'Cannot modify another admin account role or status!' })
+      }
+    }
+
+    if (nextEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nextEmail)) {
+      return res.json({ mssg: 'Invalid email!!' })
+    }
+
+    if (nextUsername !== current.username) {
+      let [{ usernameCount }] = await db.query(
+        'SELECT COUNT(id) AS usernameCount FROM users WHERE username=? AND id<>?',
+        [nextUsername, user_id]
+      )
+      if (usernameCount == 1) {
+        return res.json({ mssg: 'Username already exists!!' })
+      }
+    }
+
+    if (nextEmail !== current.email) {
+      let [{ emailCount }] = await db.query(
+        'SELECT COUNT(id) AS emailCount FROM users WHERE email=? AND id<>?',
+        [nextEmail, user_id]
+      )
+      if (emailCount == 1) {
+        return res.json({ mssg: 'Email already exists!!' })
+      }
+    }
+
+    await db.query(
+      'UPDATE users SET username=?, firstname=?, surname=?, nickname=?, email=?, role=?, account_status=?, account_type=? WHERE id=?',
+      [
+        nextUsername,
+        nextFirstname,
+        nextSurname,
+        nextNickname || '',
+        nextEmail,
+        nextRole,
+        nextStatus,
+        nextAccountType,
+        user_id,
+      ]
+    )
+
+    if (nextUsername !== current.username) {
+      await db.query(
+        'UPDATE follow_system SET follow_by_username = ? WHERE follow_by=?',
+        [nextUsername, user_id]
+      )
+      await db.query(
+        'UPDATE follow_system SET follow_to_username = ? WHERE follow_to=?',
+        [nextUsername, user_id]
+      )
+    }
+
+    if (password) {
+      await User.change_password({ password, id: user_id })
+    }
+
+    if (String(user_id) === String(adminId) && nextUsername !== current.username) {
+      req.session.username = nextUsername
+    }
+
+    res.json({ success: true, mssg: 'User updated!' })
+  } catch (error) {
+    db.catchError(error, res)
+  }
+})
+
 // LOCK USER ACCOUNT [REQ = USER_ID]
 app.post('/admin/lock-user', mw.AdminOnly, async (req, res) => {
   try {

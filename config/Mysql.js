@@ -21,4 +21,10 @@ db.connect(err => {
   }
 })
 
+db.on('error', (err) => {
+  if (err) {
+    error(err.message)
+  }
+})
+
 module.exports = db

@@ -75,6 +75,6 @@ const mutualGroupMembers = async (user, group) => {
 module.exports = {
   getWhatOfGrp,
   deleteGroup,
-  joinedGroup,
+  joinedGroup, 
   mutualGroupMembers,
 }

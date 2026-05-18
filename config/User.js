@@ -115,40 +115,38 @@ const isBlocked = async (block_by, user) => {
  * @param {Object} res Express' Res Object
  */
 const deactivate = async (user, req, res) => {
-  let posts = await db.query('SELECT post_id FROM posts WHERE user=?', [user]),
-    groups = await db.query('SELECT group_id FROM \`groups\` WHERE admin=?', [
-      user,
-    ]),
-    cons = await db.query(
-      'SELECT con_id FROM conversations WHERE user_one=? OR user_two=?',
-      [user, user]
-    ),
-    dltDir = promisify(rmdir),
-    QLusers = JSON.parse(req.cookies.users),
-    filtered = QLusers.filter(u => u.id != user)
+  await catchify(
+    db.query('UPDATE users SET account_status=? WHERE id=?', ['deleted', user])
+  )
+  let posts = await db.query('SELECT post_id FROM posts WHERE user=?', [user])
+  let groups = await db.query('SELECT group_id FROM \`groups\` WHERE admin=?', [
+    user,
+  ])
+  let cons = await db.query(
+    'SELECT con_id FROM conversations WHERE user_one=? OR user_two=?',
+    [user, user]
+  )
+  let dltDir = promisify(rmdir)
 
-  // DELETE ALL POSTS
-  posts.map(async p => {
-    await deletePost({
-      post: p.post_id,
-      user,
-      when: 'user',
-    })
-  })
+  // Best-effort cleanup of dependent records
+  await Promise.allSettled(
+    posts.map(p =>
+      deletePost({
+        post: p.post_id,
+        user,
+        when: 'user',
+      })
+    )
+  )
 
-  // DELETE ALL GROUPS
-  groups.map(async g => {
-    await deleteGroup(g.group_id)
-  })
+  await Promise.allSettled(groups.map(g => deleteGroup(g.group_id)))
+
   await db.query('DELETE FROM group_members WHERE member=? OR added_by=?', [
     user,
     user,
   ])
 
-  // DELETE ALL CONVERSATIONS
-  cons.map(async c => {
-    await deleteCon(c.con_id)
-  })
+  await Promise.allSettled(cons.map(c => deleteCon(c.con_id)))
 
   await db.query('DELETE FROM tags WHERE user=?', [user])
   await db.query('DELETE FROM favourites WHERE fav_by=? OR user=?', [
@@ -173,13 +171,28 @@ const deactivate = async (user, req, res) => {
   )
   await db.query('DELETE FROM hashtags WHERE user=?', [user])
 
-  DeleteAllOfFolder(`${root}/dist/users/${user}/`)
-  await dltDir(`${root}/dist/users/${user}`)
+  try {
+    DeleteAllOfFolder(`${root}/dist/users/${user}/`)
+    await dltDir(`${root}/dist/users/${user}`)
+  } catch (error) {
+    // Ignore file-system cleanup errors to ensure account deletion completes
+  }
 
   await db.query('DELETE FROM users WHERE id=?', [user])
 
-  res.cookie('users', `${JSON.stringify(filtered)}`)
-  req.session.reset()
+  if (res && req && req.cookies && req.cookies.users) {
+    try {
+      let QLusers = JSON.parse(req.cookies.users)
+      let filtered = QLusers.filter(u => u.id != user)
+      res.cookie('users', `${JSON.stringify(filtered)}`)
+    } catch (error) {
+      // Ignore cookie parse errors
+    }
+  }
+
+  if (req && req.session && typeof req.session.reset == 'function') {
+    req.session.reset()
+  }
 }
 
 /**

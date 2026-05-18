@@ -50,6 +50,9 @@ const SideBar = ({ uc, un }) => {
           />
           <SidebarLink link="/edit-profile" label="Edit profile" />
           <SidebarLink link="/settings" label="Settings" />
+          {isAdmin() && (
+            <SidebarLink link="/admin-dashboard" label="Admin dashboard" />
+          )}
           <li>
             {isAdmin() ? (
               <a href="#" className="admin-logout" onClick={adminLogout}>

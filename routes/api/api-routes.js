@@ -9,7 +9,7 @@ const app = require('express').Router(),
 app.post('/is-user-valid', async (req, res) => {
   let { username } = req.body,
     [{ userCount }] = await db.query(
-      'SELECT COUNT(id) AS userCount FROM users WHERE username=? LIMIT 1',
+      "SELECT COUNT(id) AS userCount FROM users WHERE username=? AND (account_status IS NULL OR account_status <> 'deleted') LIMIT 1",
       [username]
     )
   res.json(db.tf(userCount))
@@ -19,11 +19,16 @@ app.post('/is-user-valid', async (req, res) => {
 // Now includes nickname, cover_image, role, and account_status
 app.post('/get-user-details', async (req, res) => {
   let { username } = req.body,
-    id = await User.getId(username),
     details = await db.query(
-      'SELECT id, username, firstname, surname, nickname, email, bio, joined, email_verified, account_type, instagram, twitter, facebook, github, website, phone, lastOnline, cover_image, role, account_status FROM users WHERE username=?',
+      "SELECT id, username, firstname, surname, nickname, email, bio, joined, email_verified, account_type, instagram, twitter, facebook, github, website, phone, lastOnline, cover_image, role, account_status FROM users WHERE username=? AND (account_status IS NULL OR account_status <> 'deleted') LIMIT 1",
       [username]
-    ),
+    )
+
+  if (!details || details.length === 0) {
+    return res.json({ details: {}, tags: [] })
+  }
+
+  let id = details[0].id,
     tags = await db.query('SELECT user, tag FROM tags WHERE user=?', [id])
 
   res.json({

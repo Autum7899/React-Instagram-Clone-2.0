@@ -90,7 +90,7 @@ app.post('/is-group-valid', async (req, res) => {
 app.post('/get-group-details', async (req, res) => {
   let { grp_id } = req.body,
     _details = await db.query(
-      'SELECT groups.group_id, groups.name, groups.bio, groups.admin, users.username AS admin_username, groups.group_type, groups.created FROM \`groups\`, users WHERE groups.group_id=? AND groups.admin = users.id',
+      'SELECT g.group_id, g.name, g.bio, g.admin, u.username AS admin_username, g.group_type, g.created FROM \`groups\` g, users u WHERE g.group_id=? AND g.admin = u.id',
       [grp_id]
     ),
     [{ postsCount }] = await db.query(

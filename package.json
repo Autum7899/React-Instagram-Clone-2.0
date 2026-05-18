@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
+    "start:guard": "node scripts/server-guard.js",
     "dev": "webpack -d --watch",
     "prod": "webpack -p --watch",
     "env": "handy-client-env",
