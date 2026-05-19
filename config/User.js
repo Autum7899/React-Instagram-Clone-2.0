@@ -109,6 +109,19 @@ const isBlocked = async (block_by, user) => {
 }
 
 /**
+ * Returns whether two users are friends (accepted request)
+ * @param {Number} user1 User ID
+ * @param {Number} user2 User ID
+ */
+const isFriend = async (user1, user2) => {
+  let s = await db.query(
+    'SELECT COUNT(request_id) AS friend_count FROM friend_requests WHERE ((from_user=? AND to_user=?) OR (from_user=? AND to_user=?)) AND status=? LIMIT 1',
+    [user1, user2, user2, user1, 'accepted']
+  )
+  return db.tf(s[0].friend_count)
+}
+
+/**
  * Deactivates user
  * @param {user} user User to deactivate
  * @param {Object} req Express' Req object
@@ -297,6 +310,7 @@ module.exports = {
   isFollowing,
   favouriteOrNot,
   isBlocked,
+  isFriend,
   deactivate,
   mutualUsers,
   mentionUsers,

@@ -49,11 +49,27 @@ app.post('/get-notifications', async (req, res) => {
     let isFollowing = await User.isFollowing(id, n.notify_by)
     let user_username =
       n.user != 0 ? await User.getWhat('username', n.user) : ''
+    let request_id = 0
+
+    if (n.type == 'friend_request') {
+      let [request] = await db.query(
+        'SELECT request_id FROM friend_requests WHERE from_user=? AND to_user=? AND status=? ORDER BY request_time DESC LIMIT 1',
+        [n.notify_by, id, 'pending']
+      )
+      request_id = request ? request.request_id : 0
+    } else if (n.type == 'friend_accept') {
+      let [request] = await db.query(
+        'SELECT request_id FROM friend_requests WHERE ((from_user=? AND to_user=?) OR (from_user=? AND to_user=?)) AND status=? ORDER BY response_time DESC LIMIT 1',
+        [n.notify_by, id, id, n.notify_by, 'accepted']
+      )
+      request_id = request ? request.request_id : 0
+    }
 
     array.push({
       ...n,
       isFollowing,
       user_username,
+      request_id,
     })
   }
 

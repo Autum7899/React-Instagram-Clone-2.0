@@ -72,6 +72,10 @@
         font-weight: 600;
       }
 
+      & a + a{
+        margin-left: 8px;
+      }
+
     }
 
   }

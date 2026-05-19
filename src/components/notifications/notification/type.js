@@ -13,6 +13,8 @@ const NotificationType = ({ type, user_username }) => {
         : type == 'shared_your_post' ? ' shared your post'
         : type == 'comment' ? ' commented on your post'
         : type == 'favourites' ? ' added you to favourites'
+        : type == 'friend_request' ? ' sent you a friend request'
+        : type == 'friend_accept' ? ' accepted your friend request'
         : type == 'recommend' ? ` recommended ${user_username} to you`
         : type == 'add_grp_member' ? ' added you to a group'
         : type == 'invite' ? ' invited to a group'

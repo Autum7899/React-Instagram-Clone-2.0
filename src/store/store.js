@@ -17,6 +17,7 @@ import Group from './reducers/Group/Group'
 import Message from './reducers/Message/Message'
 import Setting from './reducers/Setting/Setting'
 import Hashtag from './reducers/Hashtag/hashtag'
+import Friend from './reducers/Friend/Friend'
 
 const reducers = combineReducers({
   User,
@@ -28,6 +29,7 @@ const reducers = combineReducers({
   Message,
   Setting,
   Hashtag,
+  Friend,
 })
 
 const middlwares = applyMiddleware(thunk, logger)

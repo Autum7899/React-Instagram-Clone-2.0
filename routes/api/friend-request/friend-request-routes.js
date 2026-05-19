@@ -200,7 +200,9 @@ app.post('/get-sent-requests', async (req, res) => {
 // GET FRIENDS LIST (accepted requests)
 app.post('/get-friends', async (req, res) => {
   try {
-    let { id } = req.session
+    let { id } = req.session,
+      { user } = req.body,
+      owner = user || id
 
     let friends = await db.query(
       `SELECT 
@@ -212,7 +214,7 @@ app.post('/get-friends', async (req, res) => {
       JOIN users u ON (CASE WHEN fr.from_user = ? THEN fr.to_user ELSE fr.from_user END) = u.id
       WHERE (fr.from_user = ? OR fr.to_user = ?) AND fr.status = 'accepted'
       ORDER BY fr.response_time DESC`,
-      [id, id, id, id]
+      [owner, owner, owner, owner]
     )
 
     res.json(friends)
