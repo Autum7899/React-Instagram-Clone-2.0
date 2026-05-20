@@ -2147,10 +2147,10 @@ li {
 .post {
   position: fixed;
   top: 50%;
-  left: 42%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background: #ffffff;
-  width: 400px;
+  width: 500px;
   border-radius: 3px;
   z-index: 3;
   transition: all 0.1s ease-in-out;
@@ -2253,9 +2253,6 @@ li {
   max-width: 380px;
 }
 .post .p_main label {
-  position: relative;
-  top: 140px;
-  left: 126px;
   padding: 6px 18px;
   font-size: 14px;
 }
@@ -4895,4 +4892,55 @@ li {
   min-width: 280px;
   flex-shrink: 0;
   border-radius: 4px;
+}
+
+@media (max-width: 1024px) {
+  .srajkumar {
+    display: none;
+  }
+  .badshah {
+    width: calc(100vw - 294px);
+    min-width: auto;
+    padding-right: 20px;
+  }
+  .senapati {
+    justify-content: center;
+  }
+}
+@media (max-width: 768px) {
+  .m_n_wrapper {
+    width: 64px;
+    left: 10px;
+  }
+  .m_n_wrapper > .m_n > ul > li > a > span.m_n_text,
+  .m_n_wrapper > .m_n > ul > li > a > span.m_n_new,
+  .m_n_wrapper > .m_n_bottom {
+    display: none !important;
+  }
+  .m_n_wrapper > .m_n > ul > li > a > span.m_n_icon {
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .m_n_wrapper > .m_n img {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+  .badshah {
+    left: 84px;
+    width: calc(100vw - 84px);
+    padding-right: 10px;
+  }
+  .header {
+    width: calc(100vw - 84px) !important;
+    left: 84px !important;
+  }
+  .prajkumar {
+    max-width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .badshah {
+    top: 60px;
+  }
 }
