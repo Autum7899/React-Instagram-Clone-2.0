@@ -108,6 +108,7 @@
     "progress-bar-webpack-plugin": "^1.11.0",
     "react-test-renderer": "^16.3.2",
     "redux-mock-store": "^1.5.1",
+    "sass": "^1.99.0",
     "style-loader": "^0.21.0",
     "webpack": "^4.13.0",
     "webpack-cli": "^3.0.8"

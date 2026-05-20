@@ -4,7 +4,7 @@
 .pro_banner{
   @include inst;
   position: relative;
-  top: 73px;
+  margin-top: 80px;
   padding: 10px;
 
   & .pro_top{
@@ -301,7 +301,7 @@
 .pro_nav{
   @include inst;
   cursor: default;
-  margin-top: 88px;
+  margin-top: 20px;
   text-align: center;
 
   & ul{

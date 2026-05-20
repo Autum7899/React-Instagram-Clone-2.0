@@ -52,22 +52,30 @@
 .badshah{
   position: relative;
   top: 62px;
-  left: 274px;
-  width: 800px;
-  display: block;
+  left: 294px;
+  width: calc(100vw - 334px);
+  min-width: 600px;
+  display: flow-root;
+  padding-right: 20px;
+  box-sizing: border-box;
 }
 
 .senapati{
   width: 100%;
   display: flex;
   justify-content: space-between;
+  gap: 24px;
 }
 
 .prajkumar{
-  width: 490px;
+  flex: 1;
+  min-width: 0;
+  max-width: 680px;
 }
 
 .srajkumar{
   width: 300px;
+  min-width: 280px;
+  flex-shrink: 0;
   border-radius: 4px;
 }
