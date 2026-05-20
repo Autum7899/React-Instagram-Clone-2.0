@@ -39,11 +39,22 @@ export default class PostImage extends Component {
               </p>
             </div>
 
-            <img
-              src={`/posts/${imgSrc}`}
-              className={classNames('p_img', filter)}
-              onClick={() => this._toggle('showImage')}
-            />
+            {imgSrc ? (
+              imgSrc.match(/\.(mp4|webm|mov|ogg|mkv)$/i) ? (
+                <video
+                  src={`/posts/${imgSrc}`}
+                  className={classNames('p_img', filter)}
+                  controls
+                  controlsList="nodownload"
+                />
+              ) : (
+                <img
+                  src={`/posts/${imgSrc}`}
+                  className={classNames('p_img', filter)}
+                  onClick={() => this._toggle('showImage')}
+                />
+              )
+            ) : null}
 
             <PostTags post_id={post_id} tags_count={tags_count} />
           </div>

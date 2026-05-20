@@ -29,7 +29,8 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
     let { id } = req.session,
       { desc, filter, location, type, group } = req.body,
       groupId = group === 'undefined' || !group ? 0 : parseInt(group, 10),
-      filename = req.file ? `instagram_${new Date().getTime()}.jpg` : '',
+      ext = req.file ? require('path').extname(req.file.originalname).toLowerCase() : '',
+      filename = req.file ? `instagram_${new Date().getTime()}${ext || '.jpg'}` : '',
       obj = req.file ? {
         srcFile: req.file.path,
         destFile: `${root}/dist/posts/${filename}`,

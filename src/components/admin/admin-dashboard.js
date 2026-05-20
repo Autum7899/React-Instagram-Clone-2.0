@@ -702,11 +702,19 @@ export default class AdminDashboard extends Component {
                       </span>
                     </div>
                     {p.imgSrc && (
-                      <img
-                        src={`/posts/${p.imgSrc}`}
-                        alt="Post"
-                        style={styles.postImage}
-                      />
+                      p.imgSrc.match(/\.(mp4|webm|mov|ogg|mkv)$/i) ? (
+                        <video
+                          src={`/posts/${p.imgSrc}`}
+                          style={{...styles.postImage, width: '100%', maxHeight: '400px'}}
+                          controls
+                        />
+                      ) : (
+                        <img
+                          src={`/posts/${p.imgSrc}`}
+                          alt="Post"
+                          style={styles.postImage}
+                        />
+                      )
                     )}
                     <p style={styles.postDesc}>{p.description}</p>
                     {p.nsfw_flagged && (

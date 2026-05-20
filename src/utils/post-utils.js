@@ -36,7 +36,7 @@ export const addPost = async options => {
     user = Number(uData('session')),
     username = uData('username'),
     form = new FormData(),
-    file = targetFile ? await imageCompressor(targetFile) : null,
+    file = targetFile ? (targetFile.type.startsWith('video/') ? targetFile : await imageCompressor(targetFile)) : null,
     action = new Action('.p_post')
 
   action.start()
