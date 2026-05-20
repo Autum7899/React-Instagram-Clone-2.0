@@ -4877,6 +4877,7 @@ li {
 .senapati {
   width: 100%;
   display: block;
+  position: relative;
 }
 
 .prajkumar {
@@ -4886,7 +4887,11 @@ li {
 }
 
 .srajkumar {
-  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 300px;
+  border-radius: 4px;
 }
 
 @media (max-width: 1024px) {
