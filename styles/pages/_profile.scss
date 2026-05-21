@@ -84,7 +84,8 @@
     position: absolute;
     top: -75px;
     border-radius: 50%;
-    left: 320px;
+    left: 50%;
+    transform: translateX(-50%);
     height: 150px;
     padding: 6px;
     background: $ff;
@@ -130,7 +131,7 @@
 
   & .pro_info {
     position: relative;
-    margin-top: 69px;
+    margin-top: 85px;
 
     & div{
       text-align: center;

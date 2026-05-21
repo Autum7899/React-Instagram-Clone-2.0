@@ -1,34 +1,31 @@
 import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
 import OnlineUsers from './onlineUsers'
-import FAIcon from '../../others/icons/font-awesome-icon'
-import PrimaryButton from '../../others/button/primary-btn'
+import { t } from '../../../utils/translation'
 
-export default class OnlineUsersButton extends Component {
+class OnlineUsersButton extends Component {
   state = {
     showOnlineUsers: false,
   }
 
-  show = e => {
+  toggleOnlineUsers = e => {
     e.preventDefault()
-    this.setState({ showOnlineUsers: true })
+    this.setState({ showOnlineUsers: !this.state.showOnlineUsers })
   }
-
-  btnLabel = () => (
-    <Fragment>
-      <FAIcon icon="globe" />
-      <span>Online users</span>
-    </Fragment>
-  )
 
   render() {
     let { showOnlineUsers } = this.state
+    let { lang } = this.props
 
     return (
       <Fragment>
-        <PrimaryButton label={this.btnLabel} onClick={this.show} />
+        <a href="#" className="pri_btn" onClick={this.toggleOnlineUsers}>
+          <i className="fas fa-globe" />
+          <span>{t(lang, 'messages', 'onlineUsers')}</span>
+        </a>
 
         {showOnlineUsers && (
-          <OnlineUsers back={() => this.setState({ showOnlineUsers: false })} />
+          <OnlineUsers back={this.toggleOnlineUsers} />
         )}
       </Fragment>
     )
