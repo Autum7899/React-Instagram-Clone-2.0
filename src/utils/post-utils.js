@@ -32,6 +32,7 @@ export const addPost = async options => {
       group,
       group_name,
       tags,
+      isNSFW,
     } = options,
     user = Number(uData('session')),
     username = uData('username'),
@@ -50,6 +51,7 @@ export const addPost = async options => {
   form.append('location', location)
   form.append('type', type)
   form.append('group', group)
+  form.append('isNSFW', isNSFW)
 
   let {
     data: { success, mssg, post_id },

@@ -13,7 +13,7 @@ app.post('/get-user-posts', async (req, res) => {
       // Always only show approved posts — pending/rejected should never appear in the grid
       statusFilter = "AND posts.status='approved'",
       _posts = await db.query(
-        `SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.post_time, posts.status, posts.rejection_reason FROM posts, users WHERE posts.user=? AND posts.user = users.id AND posts.type=? ${statusFilter} ORDER BY posts.post_time DESC`,
+        `SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.post_time, posts.status, posts.rejection_reason, posts.isNSFW, posts.nsfwTaggedByAuthor FROM posts, users WHERE posts.user=? AND posts.user = users.id AND posts.type=? ${statusFilter} ORDER BY posts.post_time DESC`,
         [id, 'user']
       ),
       posts = []
@@ -45,7 +45,7 @@ app.post('/get-user-posts', async (req, res) => {
 app.post('/get-bookmarked-posts', async (req, res) => {
   try {
     let _posts = await db.query(
-        "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time FROM posts, users, bookmarks WHERE bookmarks.bkmrk_by=? AND posts.user = users.id AND bookmarks.post_id = posts.post_id AND posts.status='approved' ORDER BY bookmarks.bkmrk_time DESC",
+        "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time, posts.isNSFW, posts.nsfwTaggedByAuthor FROM posts, users, bookmarks WHERE bookmarks.bkmrk_by=? AND posts.user = users.id AND bookmarks.post_id = posts.post_id AND posts.status='approved' ORDER BY bookmarks.bkmrk_time DESC",
         [req.body.user]
       ),
       posts = []
@@ -79,7 +79,7 @@ app.post('/get-bookmarked-posts', async (req, res) => {
 app.post('/get-tagged-posts', async (req, res) => {
   try {
     let _posts = await db.query(
-        "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time FROM post_tags, posts, users WHERE post_tags.user = ? AND post_tags.post_id = posts.post_id AND posts.user = users.id AND posts.status='approved' ORDER BY posts.post_time DESC",
+        "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time, posts.isNSFW, posts.nsfwTaggedByAuthor FROM post_tags, posts, users WHERE post_tags.user = ? AND post_tags.post_id = posts.post_id AND posts.user = users.id AND posts.status='approved' ORDER BY posts.post_time DESC",
         [req.body.user]
       ),
       posts = []
@@ -113,7 +113,7 @@ app.post('/get-tagged-posts', async (req, res) => {
 app.post('/get-shared-posts', async (req, res) => {
   try {
     let _posts = await db.query(
-        "SELECT posts.post_id, shares.share_id, posts.user, users.username, users.firstname, users.surname, shares.share_by, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time, shares.share_time FROM shares, posts, users WHERE shares.share_to = ? AND shares.post_id = posts.post_id AND posts.user = users.id AND posts.status='approved' ORDER BY shares.share_time DESC",
+        "SELECT posts.post_id, shares.share_id, posts.user, users.username, users.firstname, users.surname, shares.share_by, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time, shares.share_time, posts.isNSFW, posts.nsfwTaggedByAuthor FROM shares, posts, users WHERE shares.share_to = ? AND shares.post_id = posts.post_id AND posts.user = users.id AND posts.status='approved' ORDER BY shares.share_time DESC",
         [req.body.user]
       ),
       posts = []
@@ -149,7 +149,7 @@ app.post('/get-shared-posts', async (req, res) => {
 app.post('/get-photos', async (req, res) => {
   try {
     let _photos = await db.query(
-      "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.imgSrc AS imgsrc, posts.filter, posts.post_time FROM posts, users WHERE posts.user = ? AND posts.user = users.id AND posts.type = ? AND posts.status='approved' ORDER BY posts.post_time DESC",
+      "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.imgSrc AS imgsrc, posts.filter, posts.post_time, posts.isNSFW, posts.nsfwTaggedByAuthor FROM posts, users WHERE posts.user = ? AND posts.user = users.id AND posts.type = ? AND posts.status='approved' ORDER BY posts.post_time DESC",
       [req.body.user, 'user']
     )
 
@@ -163,7 +163,7 @@ app.post('/get-photos', async (req, res) => {
 app.post('/get-feed', async (req, res) => {
   try {
     let _posts = await db.query(
-        "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time FROM posts, users, follow_system WHERE follow_system.follow_by = ? AND follow_system.follow_to = posts.user AND posts.user = users.id AND posts.status='approved' ORDER BY posts.post_time DESC",
+        "SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time, posts.isNSFW, posts.nsfwTaggedByAuthor FROM posts, users, follow_system WHERE follow_system.follow_by = ? AND follow_system.follow_to = posts.user AND posts.user = users.id AND posts.status='approved' ORDER BY posts.post_time DESC",
         [req.session.id]
       ),
       posts = []
@@ -198,7 +198,7 @@ app.post('/get-post', async (req, res) => {
   try {
     let { post_id } = req.body,
       _post = await db.query(
-        'SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time, posts.status, posts.rejection_reason FROM posts, users WHERE posts.post_id = ? AND posts.user = users.id',
+        'SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.group_id, posts.post_time, posts.status, posts.rejection_reason, posts.isNSFW, posts.nsfwTaggedByAuthor FROM posts, users WHERE posts.post_id = ? AND posts.user = users.id',
         [post_id]
       ),
       sessionId = req.session.id

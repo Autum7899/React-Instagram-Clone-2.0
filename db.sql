@@ -529,6 +529,8 @@ CREATE TABLE `posts` (
   `type` enum('user','group') COLLATE utf8mb4_bin NOT NULL DEFAULT 'user',
   `group_id` int(11) NOT NULL,
   `post_time` varchar(100) COLLATE utf8mb4_bin NOT NULL,
+  `isNSFW` tinyint(1) DEFAULT 0,
+  `nsfwTaggedByAuthor` tinyint(1) DEFAULT 0,
   `status` enum('pending','approved','rejected') COLLATE utf8mb4_bin NOT NULL DEFAULT 'approved',
   `rejection_reason` varchar(500) COLLATE utf8mb4_bin NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

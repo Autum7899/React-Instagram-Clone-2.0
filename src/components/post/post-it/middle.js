@@ -6,7 +6,7 @@ import { CPP } from '../../../actions/post'
 
 const PostItMiddle = ({ postIt, session, dispatch }) => {
   let { username } = session
-  let { fileChanged, desc, previewImg, filter, fileInput } = postIt
+  let { fileChanged, desc, previewImg, filter, fileInput, isNSFW } = postIt
 
   let dp = (...args) => dispatch(CPP(...args))
 
@@ -62,6 +62,19 @@ const PostItMiddle = ({ postIt, session, dispatch }) => {
           />
         </form>
       )}
+
+      <div style={{ padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flexShrink: 0 }}>
+        <input 
+          type="checkbox" 
+          id="isNSFW" 
+          checked={isNSFW} 
+          onChange={(e) => dp('isNSFW', e.target.checked)} 
+          style={{ marginRight: '8px', cursor: 'pointer' }}
+        />
+        <label htmlFor="isNSFW" style={{ cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', color: '#e74c3c' }}>
+          Mark as NSFW (Sensitive Content)
+        </label>
+      </div>
     </div>
   )
 }

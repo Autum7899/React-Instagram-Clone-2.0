@@ -27,7 +27,8 @@ const checkNSFW = (text) => {
 app.post('/post-it', upload.single('image'), async (req, res) => {
   try {
     let { id } = req.session,
-      { desc, filter, location, type, group } = req.body,
+      { desc, filter, location, type, group, isNSFW: isNSFWStr } = req.body,
+      isNSFWClient = isNSFWStr === 'true',
       groupId = group === 'undefined' || !group ? 0 : parseInt(group, 10),
       ext = req.file ? require('path').extname(req.file.originalname).toLowerCase() : '',
       filename = req.file ? `instagram_${new Date().getTime()}${ext || '.jpg'}` : '',
@@ -38,9 +39,10 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
 
     // Check for NSFW content
     const nsfwResult = checkNSFW(desc)
+    const finalIsNSFW = isNSFWClient || nsfwResult.isNSFW
     const postStatus = 'pending'
-    const rejectionReason = nsfwResult.isNSFW ? `NSFW Review needed: ${nsfwResult.flaggedWords.join(', ')}` : ''
-    if (nsfwResult.isNSFW) {
+    const rejectionReason = finalIsNSFW ? `NSFW Review needed: ${nsfwResult.flaggedWords.join(', ')} (User Tagged: ${isNSFWClient})` : ''
+    if (finalIsNSFW) {
       desc = desc ? `${desc} #nsfw` : '#nsfw'
     }
 
@@ -55,6 +57,8 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
         post_time: new Date().getTime(),
         status: postStatus,
         rejection_reason: rejectionReason,
+        isNSFW: finalIsNSFW ? 1 : 0,
+        nsfwTaggedByAuthor: isNSFWClient ? 1 : 0,
       }
 
     if (obj) {
@@ -69,7 +73,7 @@ app.post('/post-it', upload.single('image'), async (req, res) => {
     await db.toHashtag(desc, id, insertId)
     await User.mentionUsers(desc, id, insertId, 'post')
 
-    let responseMsg = nsfwResult.isNSFW
+    let responseMsg = finalIsNSFW
       ? 'Posted! Your post is flagged as NSFW and is pending admin review.'
       : 'Posted! Your post is pending admin approval.'
 

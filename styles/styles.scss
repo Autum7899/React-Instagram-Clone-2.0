@@ -64,6 +64,8 @@
   width: 100%;
   display: block;
   position: relative;
+  padding-right: 320px; /* Space for the absolute sidebar so margin auto centers correctly */
+  box-sizing: border-box;
 }
 
 .prajkumar{
@@ -93,6 +95,7 @@
   }
   
   .senapati {
+    padding-right: 0;
     justify-content: center;
   }
 }

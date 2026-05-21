@@ -26,7 +26,7 @@ const checkNSFW = (text) => {
 app.post('/get-pending-posts', mw.AdminOnly, async (req, res) => {
   try {
     let posts = await db.query(
-      'SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.post_time, posts.status FROM posts, users WHERE posts.status=? AND posts.user = users.id ORDER BY posts.post_time DESC',
+      'SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.post_time, posts.status, posts.isNSFW, posts.nsfwTaggedByAuthor FROM posts, users WHERE posts.status=? AND posts.user = users.id ORDER BY posts.post_time DESC',
       ['pending']
     )
 
@@ -128,7 +128,7 @@ app.post('/get-all-posts-admin', mw.AdminOnly, async (req, res) => {
       : [limit, offset]
 
     let posts = await db.query(
-      `SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.post_time, posts.status, posts.rejection_reason FROM posts, users WHERE posts.user = users.id ${whereClause} ORDER BY posts.post_time DESC LIMIT ? OFFSET ?`,
+      `SELECT posts.post_id, posts.user, users.username, users.firstname, users.surname, posts.description, posts.imgSrc, posts.filter, posts.location, posts.type, posts.post_time, posts.status, posts.rejection_reason, posts.isNSFW, posts.nsfwTaggedByAuthor FROM posts, users WHERE posts.user = users.id ${whereClause} ORDER BY posts.post_time DESC LIMIT ? OFFSET ?`,
       params
     )
 
@@ -159,6 +159,17 @@ app.post('/get-my-rejected-posts', async (req, res) => {
       [id, 'rejected']
     )
     res.json(posts)
+  } catch (error) {
+    db.catchError(error, res)
+  }
+})
+
+// TOGGLE NSFW STATUS (Admin only) [REQ = POST_ID, IS_NSFW]
+app.post('/toggle-nsfw', mw.AdminOnly, async (req, res) => {
+  try {
+    let { post_id, isNSFW } = req.body
+    await db.query('UPDATE posts SET isNSFW=? WHERE post_id=?', [isNSFW ? 1 : 0, post_id])
+    res.json({ success: true, mssg: 'NSFW status updated!' })
   } catch (error) {
     db.catchError(error, res)
   }

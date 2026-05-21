@@ -179,6 +179,12 @@ export default class AdminDashboard extends Component {
     this.fetchStats()
   }
 
+  toggleNSFW = async (post_id, currentNSFW) => {
+    await axios.post('/api/toggle-nsfw', { post_id, isNSFW: !currentNSFW })
+    this.fetchPendingPosts()
+    this.fetchStats()
+  }
+
   rejectPost = async (post_id) => {
     let reason = prompt('Enter rejection reason:')
     if (reason) {
@@ -717,12 +723,15 @@ export default class AdminDashboard extends Component {
                       )
                     )}
                     <p style={styles.postDesc}>{p.description}</p>
-                    {p.nsfw_flagged && (
-                      <div style={styles.nsfwWarning}>
-                        ⚠️ NSFW flagged: {p.nsfw_words.join(', ')}
-                      </div>
-                    )}
+                    <div style={{...styles.nsfwWarning, background: p.isNSFW ? '#ffebee' : '#e8f5e9', color: p.isNSFW ? '#c62828' : '#2e7d32'}}>
+                      <strong>NSFW Status:</strong> {p.isNSFW ? 'YES' : 'NO'} 
+                      {p.nsfwTaggedByAuthor ? ' (Tagged by Author)' : ''}
+                      {p.nsfw_flagged ? ` | Auto-flagged: ${p.nsfw_words.join(', ')}` : ''}
+                    </div>
                     <div style={styles.postActions}>
+                      <button style={styles.btnInfo} onClick={() => this.toggleNSFW(p.post_id, p.isNSFW)}>
+                        {p.isNSFW ? 'Remove NSFW' : 'Mark NSFW'}
+                      </button>
                       <button style={styles.btnSuccess} onClick={() => this.approvePost(p.post_id)}>
                         ✅ Approve
                       </button>
