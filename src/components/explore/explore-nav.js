@@ -15,16 +15,19 @@ const ExploreNav = ({ url, lang }) => {
       <ul>
         <li>
           <NavLink to={`${url}`} exact {...commonProps}>
+            <i className="fas fa-users" />
             {t(lang, 'explore', 'users')}
           </NavLink>
         </li>
         <li>
           <NavLink to={`${url}/explore-photos`} {...commonProps}>
+            <i className="fas fa-images" />
             {t(lang, 'explore', 'photos')}
           </NavLink>
         </li>
         <li>
           <NavLink to={`${url}/explore-groups`} {...commonProps}>
+            <i className="fas fa-layer-group" />
             {t(lang, 'explore', 'groups')}
           </NavLink>
         </li>

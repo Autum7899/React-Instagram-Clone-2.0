@@ -3,7 +3,7 @@
 .messages_senapati {
   display: flex;
   justify-content: space-between;
-  height: calc(100vh - 100px); /* Fill the available viewport height minus header padding */
+  height: calc(100vh - 102px); /* Fill the available viewport height minus header padding */
   gap: 20px;
   overflow: hidden;
 
@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    border-right: 1px solid #edf0f5;
+    border-right: 1px solid $ee;
     padding-right: 15px;
 
     & .mssg_new{
@@ -81,7 +81,7 @@
         width: 6px;
       }
       &::-webkit-scrollbar-thumb {
-        background: #ccc;
+        background: $d_light;
         border-radius: 3px;
       }
     }
@@ -98,7 +98,7 @@
       align-items: center;
 
       &:hover {
-        background: #f6f7f9;
+        background: $ee;
       }
 
       & > img{
@@ -149,13 +149,13 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        color: #aab8c2;
+        color: $d_light;
         font-size: 12px;
       }
 
       & .m_sr_unread{
-        background: #0084ff;
-        color: $ff;
+        background: $oo;
+        color: #fff;
         padding: 2px 6px;
         border-radius: 12px;
         font-size: 12px;
@@ -168,7 +168,7 @@
     }
 
      & .mssg_sr_toggle{
-      background: #f6f7f9;
+      background: $ee;
       animation: pro_active 0.1s ease-in-out;
     }
 
@@ -199,7 +199,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      border: 1px solid #edf0f5;
+      border: 1px solid $ee;
       border-radius: 8px;
       background: $ff;
       overflow: hidden;
@@ -214,10 +214,10 @@
       }
 
       & .m_m_top{
-        background: #fdfdfd;
+        background: $fb;
         padding: 12px 15px;
         position: relative;
-        border-bottom: 1px solid #edf0f5;
+        border-bottom: 1px solid $ee;
         display: flex;
         align-items: center;
         flex-shrink: 0;
@@ -265,7 +265,7 @@
           transition: 0.2s;
 
           &:hover{
-            background: #f0f2f5;
+            background: $ee;
             color: $dark;
           }
         }
@@ -341,7 +341,7 @@
             & .m_m_time {
               display: block;
               font-size: 11px;
-              color: #aab8c2;
+              color: $d_light;
               margin-top: 4px;
             }
 
@@ -351,7 +351,7 @@
               margin-top: 4px;
 
               & > div > span {
-                color: #aab8c2;
+                color: $d_light;
                 cursor: pointer;
                 transition: 0.2s;
 
@@ -371,12 +371,12 @@
             align-items: flex-end;
 
             & .m_m {
-              background: #1da1f2;
-              color: $ff;
+              background: $oo;
+              color: #fff;
               border-bottom-right-radius: 4px;
 
               & .hashtag {
-                color: $ff;
+                color: #fff;
                 text-decoration: underline;
               }
             }
@@ -394,8 +394,8 @@
             align-items: flex-start;
 
             & .m_m {
-              background: #EFF3F6;
-              color: #050505;
+              background: $ee;
+              color: $dark;
               border-bottom-left-radius: 4px;
             }
 
@@ -420,8 +420,8 @@
 
       & .m_m_bottom {
         padding: 15px;
-        background: #f6f7f9;
-        border-top: 1px solid #eee;
+        background: $fb;
+        border-top: 1px solid $ee;
         flex-shrink: 0;
 
         /* TextMessage component wrapper */
@@ -440,8 +440,9 @@
           min-height: 44px;
           max-height: 120px;
           border-radius: 22px;
-          border: 1px solid #ddd;
-          background: #fff;
+          border: 1px solid $ee;
+          background: $fb;
+          color: $dark;
           resize: none;
           font-family: inherit;
           line-height: 1.4;
@@ -449,7 +450,7 @@
           box-sizing: border-box;
           
           &:focus {
-            border-color: #1da1f2;
+            border-color: $oo;
           }
         }
 
@@ -459,25 +460,26 @@
           font-size: 14px;
           font-weight: 600;
           border-radius: 22px;
-          background: #1da1f2;
+          background: $oo;
           color: white;
           border: none;
           cursor: pointer;
-          transition: background 0.2s;
+          transition: opacity 0.2s;
 
           &:hover {
-            background: #1a91da;
+            opacity: 0.9;
           }
           
           &:disabled {
-            background: #aadaff;
+            background: $ee;
+            color: $d_light;
             cursor: not-allowed;
           }
         }
 
         & .mssg_emoji_btn {
           position: absolute;
-          color: #aab8c2;
+          color: $d_light;
           display: flex;
           align-items: center;
           justify-content: center;

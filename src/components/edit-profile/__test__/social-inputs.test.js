@@ -5,9 +5,9 @@ import SocialInputs from '../social-inputs'
 describe('Social-Inputs Component', () => {
   const props = {
     inputs: {
-      instagram: 'https://www.instagram.com/_faiyaz_shaikh',
-      github: 'https://github.com/yTakkar/',
-      twitter: 'https://twitter.com/shtakkar',
+      instagram: 'https://www.instagram.com/_Gangstagram_shaikh',
+      github: 'https://github.com/Gangstagram/',
+      twitter: 'https://twitter.com/shgangstagram',
       facebook: 'https://www.facebook.com/profile.php?id=100009110960262',
       website: '',
       phone: '',

@@ -1,8 +1,3 @@
-/**
- * @author Faiyaz Shaikh <www.shtakkar@gmail.com>
- * GitHub repo: https://github.com/yTakkar/React-Instagram-Clone-2.0
- */
-
 // MAIN ENTRY OF OUR APP
 
 // Initializes dotenv
@@ -51,7 +46,7 @@ app.engine(
 app.set('view engine', 'hbs')
 
 // Middlewares
-const faviconPath = join(__dirname, 'dist', 'images', 'favicon', 'favicon.png')
+const faviconPath = join(__dirname, 'dist', 'images', 'favicon', 'old', 'instagram.png')
 if (fs.existsSync(faviconPath)) {
   app.use(favicon(faviconPath))
 } else {

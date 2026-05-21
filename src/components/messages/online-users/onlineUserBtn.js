@@ -9,7 +9,7 @@ class OnlineUsersButton extends Component {
   }
 
   toggleOnlineUsers = e => {
-    e.preventDefault()
+    e ? e.preventDefault() : null
     this.setState({ showOnlineUsers: !this.state.showOnlineUsers })
   }
 
@@ -31,3 +31,10 @@ class OnlineUsersButton extends Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  lang: state.Language.language
+})
+
+export default connect(mapStateToProps)(OnlineUsersButton)
+export { OnlineUsersButton as PureOnlineUsersButton }

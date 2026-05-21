@@ -5,9 +5,9 @@ import { create } from 'react-test-renderer'
 describe('Mon-TopInfo Component', () => {
   const info = {
     user: 24,
-    username: 'takkar',
+    username: 'gangstagram',
     firstname: 'iam',
-    surname: '_takkar',
+    surname: '_gangstagram',
   }
 
   it('should match snapshot', () => {

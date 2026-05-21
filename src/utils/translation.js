@@ -43,7 +43,7 @@ export const translations = {
       noGroups: 'Sorry, no groups to explore!!'
     },
     header: {
-      search: 'Search Instagram',
+      search: 'Search Gangstagram',
       settings: 'Settings',
       edit: 'Edit',
       help: 'Help',
@@ -108,7 +108,7 @@ export const translations = {
       noGroups: 'Xin lỗi, không có nhóm nào để khám phá!!'
     },
     header: {
-      search: 'Tìm kiếm Instagram',
+      search: 'Tìm kiếm Gangstagram',
       settings: 'Cài đặt',
       edit: 'Chỉnh sửa',
       help: 'Trợ giúp',

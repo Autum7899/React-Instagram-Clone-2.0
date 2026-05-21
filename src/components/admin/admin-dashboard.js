@@ -17,6 +17,38 @@ const emptyNewUser = {
   account_type: 'public',
 }
 
+const palette = {
+  brand: '#0f766e',
+  info: '#0ea5e9',
+  teal: '#14b8a6',
+  accent: '#f97316',
+  success: '#16a34a',
+  warning: '#f59e0b',
+  danger: '#dc2626',
+  neutral: '#64748b',
+  text: '#0f172a',
+  textSecondary: '#475569',
+  textMuted: '#64748b',
+  textFaint: '#94a3b8',
+  border: '#e2e8f0',
+  borderStrong: '#cbd5e1',
+  surface: '#f8fafc',
+  surfaceAlt: '#f1f5f9',
+  surfaceSoft: '#eef2f6',
+  cardUsers: '#e0f2fe',
+  cardPosts: '#ecfdf3',
+  cardInteractions: '#fff7ed',
+  cardSocial: '#ecfeff',
+  nsfwBg: '#fee2e2',
+  nsfwText: '#b91c1c',
+  safeBg: '#dcfce7',
+  safeText: '#15803d',
+  shadow: 'rgba(15, 23, 42, 0.12)',
+  shadowLight: 'rgba(15, 23, 42, 0.08)',
+  gridLine: 'rgba(15, 23, 42, 0.05)',
+  gridLineStrong: 'rgba(15, 23, 42, 0.08)',
+}
+
 export default class AdminDashboard extends Component {
   state = {
     stats: null,
@@ -277,7 +309,7 @@ export default class AdminDashboard extends Component {
     const normalized = items.map(item => ({
       label: item.label,
       value: Number(item.value) || 0,
-      color: item.color || '#94a3b8',
+      color: item.color || palette.textMuted,
     }))
     const total = normalized.reduce((sum, item) => sum + item.value, 0)
 
@@ -296,7 +328,7 @@ export default class AdminDashboard extends Component {
     const backgroundImage =
       total > 0 && slices.length
         ? `conic-gradient(${slices.join(', ')})`
-        : 'conic-gradient(#e2e8f0 0% 100%)'
+        : `conic-gradient(${palette.border} 0% 100%)`
 
     return (
       <div style={styles.pieWrap}>
@@ -367,60 +399,60 @@ export default class AdminDashboard extends Component {
             {/* Overview Tab */}
             {activeTab === 'overview' && stats && (() => {
               const userBars = [
-                { label: 'Active', value: stats.users.active, color: '#4caf50' },
-                { label: 'Locked', value: stats.users.locked, color: '#ff9800' },
-                { label: 'Deleted', value: stats.users.deleted, color: '#f44336' },
-                { label: 'Admins', value: stats.users.admins, color: '#8e24aa' },
+                { label: 'Active', value: stats.users.active, color: palette.success },
+                { label: 'Locked', value: stats.users.locked, color: palette.warning },
+                { label: 'Deleted', value: stats.users.deleted, color: palette.danger },
+                { label: 'Admins', value: stats.users.admins, color: palette.brand },
               ]
 
               const postBars = [
-                { label: 'Approved', value: stats.posts.approved, color: '#4caf50' },
-                { label: 'Pending', value: stats.posts.pending, color: '#ff9800' },
-                { label: 'Rejected', value: stats.posts.rejected, color: '#f44336' },
+                { label: 'Approved', value: stats.posts.approved, color: palette.success },
+                { label: 'Pending', value: stats.posts.pending, color: palette.warning },
+                { label: 'Rejected', value: stats.posts.rejected, color: palette.danger },
               ]
 
               const interactionBars = [
-                { label: 'Comments', value: stats.interactions.comments, color: '#1b9be9' },
-                { label: 'Likes', value: stats.interactions.likes, color: '#00bcd4' },
-                { label: 'Shares', value: stats.interactions.shares, color: '#9c27b0' },
-                { label: 'Follows', value: stats.interactions.follows, color: '#607d8b' },
+                { label: 'Comments', value: stats.interactions.comments, color: palette.info },
+                { label: 'Likes', value: stats.interactions.likes, color: palette.teal },
+                { label: 'Shares', value: stats.interactions.shares, color: palette.accent },
+                { label: 'Follows', value: stats.interactions.follows, color: palette.neutral },
               ]
 
               const socialBars = [
-                { label: 'Groups', value: stats.interactions.groups, color: '#4caf50' },
-                { label: 'Conversations', value: stats.interactions.conversations, color: '#ff9800' },
-                { label: 'Notifications', value: stats.interactions.notifications, color: '#f44336' },
+                { label: 'Groups', value: stats.interactions.groups, color: palette.success },
+                { label: 'Conversations', value: stats.interactions.conversations, color: palette.warning },
+                { label: 'Notifications', value: stats.interactions.notifications, color: palette.danger },
               ]
 
               const friendStats = stats.friend_requests || { total: 0, pending: 0, accepted: 0, rejected: 0 }
               const friendBars = [
-                { label: 'Pending', value: friendStats.pending, color: '#ff9800' },
-                { label: 'Accepted', value: friendStats.accepted, color: '#4caf50' },
-                { label: 'Rejected', value: friendStats.rejected, color: '#f44336' },
+                { label: 'Pending', value: friendStats.pending, color: palette.warning },
+                { label: 'Accepted', value: friendStats.accepted, color: palette.success },
+                { label: 'Rejected', value: friendStats.rejected, color: palette.danger },
               ]
 
               return (
                 <div>
                   <div style={styles.statsGrid}>
-                    <div style={{ ...styles.statCard, background: '#e3f2fd' }}>
+                    <div style={{ ...styles.statCard, background: palette.cardUsers }}>
                       <h3>Users</h3>
                       <p style={styles.statNumber}>{stats.users.total}</p>
                       <small>Active: {stats.users.active} | Locked: {stats.users.locked} | Deleted: {stats.users.deleted}</small>
                       <br/><small>New (7d): {stats.users.new_7d} | Admins: {stats.users.admins}</small>
                     </div>
-                    <div style={{ ...styles.statCard, background: '#e8f5e9' }}>
+                    <div style={{ ...styles.statCard, background: palette.cardPosts }}>
                       <h3>Posts</h3>
                       <p style={styles.statNumber}>{stats.posts.total}</p>
                       <small>Approved: {stats.posts.approved} | Pending: {stats.posts.pending} | Rejected: {stats.posts.rejected}</small>
                       <br/><small>New (7d): {stats.posts.new_7d}</small>
                     </div>
-                    <div style={{ ...styles.statCard, background: '#fff3e0' }}>
+                    <div style={{ ...styles.statCard, background: palette.cardInteractions }}>
                       <h3>Interactions</h3>
                       <p style={styles.statNumber}>{stats.interactions.comments + stats.interactions.likes}</p>
                       <small>Comments: {stats.interactions.comments} | Likes: {stats.interactions.likes}</small>
                       <br/><small>Shares: {stats.interactions.shares} | Follows: {stats.interactions.follows}</small>
                     </div>
-                    <div style={{ ...styles.statCard, background: '#f3e5f5' }}>
+                    <div style={{ ...styles.statCard, background: palette.cardSocial }}>
                       <h3>Social</h3>
                       <p style={styles.statNumber}>{stats.interactions.groups}</p>
                       <small>Groups | Conversations: {stats.interactions.conversations}</small>
@@ -659,7 +691,7 @@ export default class AdminDashboard extends Component {
                         <td style={styles.td}>
                           <span style={{
                             ...styles.badge,
-                            background: u.role === 'admin' ? '#e91e63' : '#2196f3'
+                            background: u.role === 'admin' ? palette.brand : palette.info
                           }}>
                             {u.role}
                           </span>
@@ -667,8 +699,8 @@ export default class AdminDashboard extends Component {
                         <td style={styles.td}>
                           <span style={{
                             ...styles.badge,
-                            background: u.account_status === 'active' ? '#4caf50' :
-                              u.account_status === 'locked' ? '#ff9800' : '#f44336'
+                            background: u.account_status === 'active' ? palette.success :
+                              u.account_status === 'locked' ? palette.warning : palette.danger
                           }}>
                             {u.account_status}
                           </span>
@@ -723,7 +755,13 @@ export default class AdminDashboard extends Component {
                       )
                     )}
                     <p style={styles.postDesc}>{p.description}</p>
-                    <div style={{...styles.nsfwWarning, background: p.isNSFW ? '#ffebee' : '#e8f5e9', color: p.isNSFW ? '#c62828' : '#2e7d32'}}>
+                    <div
+                      style={{
+                        ...styles.nsfwWarning,
+                        background: p.isNSFW ? palette.nsfwBg : palette.safeBg,
+                        color: p.isNSFW ? palette.nsfwText : palette.safeText,
+                      }}
+                    >
                       <strong>NSFW Status:</strong> {p.isNSFW ? 'YES' : 'NO'} 
                       {p.nsfwTaggedByAuthor ? ' (Tagged by Author)' : ''}
                       {p.nsfw_flagged ? ` | Auto-flagged: ${p.nsfw_words.join(', ')}` : ''}
@@ -791,30 +829,30 @@ export default class AdminDashboard extends Component {
 
 const styles = {
   container: { maxWidth: '1200px', margin: '20px auto', padding: '20px' },
-  heading: { fontSize: '24px', marginBottom: '20px', color: '#333' },
-  subHeading: { fontSize: '18px', marginBottom: '15px', color: '#555' },
-  tabs: { display: 'flex', marginBottom: '20px', borderBottom: '2px solid #eee' },
+  heading: { fontSize: '24px', marginBottom: '20px', color: palette.text },
+  subHeading: { fontSize: '18px', marginBottom: '15px', color: palette.textSecondary },
+  tabs: { display: 'flex', marginBottom: '20px', borderBottom: `2px solid ${palette.border}` },
   tab: {
     padding: '10px 20px', border: 'none', background: 'none', cursor: 'pointer',
-    fontSize: '14px', fontWeight: '600', color: '#666', borderBottom: '2px solid transparent',
+    fontSize: '14px', fontWeight: '600', color: palette.textMuted, borderBottom: '2px solid transparent',
     marginBottom: '-2px', transition: 'all 0.3s',
   },
-  activeTab: { color: '#1b9be9', borderBottom: '2px solid #1b9be9' },
-  loading: { textAlign: 'center', padding: '40px', color: '#999' },
+  activeTab: { color: palette.brand, borderBottom: `2px solid ${palette.brand}` },
+  loading: { textAlign: 'center', padding: '40px', color: palette.textFaint },
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px' },
   chartsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '15px', marginTop: '20px' },
   statCard: {
-    padding: '20px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    padding: '20px', borderRadius: '8px', boxShadow: `0 2px 8px ${palette.shadow}`,
   },
-  statNumber: { fontSize: '36px', fontWeight: 'bold', margin: '10px 0', color: '#333' },
+  statNumber: { fontSize: '36px', fontWeight: 'bold', margin: '10px 0', color: palette.text },
   chartCard: {
     padding: '16px',
     borderRadius: '8px',
-    background: '#f9fafb',
-    border: '1px solid #e3e8ef',
-    boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.6)',
+    background: palette.surface,
+    border: `1px solid ${palette.border}`,
+    boxShadow: 'inset 0 0 0 1px rgba(255, 255, 255, 0.65)',
     backgroundImage:
-      'linear-gradient(180deg, rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)',
+      `linear-gradient(180deg, ${palette.gridLine} 1px, transparent 1px), linear-gradient(90deg, ${palette.gridLine} 1px, transparent 1px)`,
     backgroundSize: '20px 20px',
     fontFamily:
       "'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
@@ -823,7 +861,7 @@ const styles = {
     fontSize: '12px',
     fontWeight: '700',
     marginBottom: '12px',
-    color: '#1f2937',
+    color: palette.text,
     letterSpacing: '0.08em',
     textTransform: 'uppercase',
   },
@@ -833,32 +871,32 @@ const styles = {
     gap: '8px',
     marginBottom: '8px',
     paddingBottom: '6px',
-    borderBottom: '1px dashed #e1e7ef',
+    borderBottom: `1px dashed ${palette.border}`,
   },
   chartRowLast: { borderBottom: 'none', marginBottom: '0', paddingBottom: '0' },
   chartLabel: {
     width: '110px',
     fontSize: '11px',
-    color: '#6b7280',
+    color: palette.textMuted,
     letterSpacing: '0.05em',
     textTransform: 'uppercase',
   },
   chartBarTrack: {
     flex: 1,
     height: '8px',
-    background: '#eef2f7',
+    background: palette.surfaceAlt,
     borderRadius: '6px',
     overflow: 'hidden',
     backgroundImage:
-      'linear-gradient(90deg, rgba(15,23,42,0.08) 1px, transparent 1px)',
+      `linear-gradient(90deg, ${palette.gridLineStrong} 1px, transparent 1px)`,
     backgroundSize: '12px 100%',
   },
-  chartBar: { height: '8px', borderRadius: '6px', boxShadow: '0 0 0 1px rgba(15,23,42,0.08)' },
+  chartBar: { height: '8px', borderRadius: '6px', boxShadow: `0 0 0 1px ${palette.gridLineStrong}` },
   chartValue: {
     minWidth: '80px',
     textAlign: 'right',
     fontSize: '11px',
-    color: '#111827',
+    color: palette.text,
     fontVariantNumeric: 'tabular-nums',
   },
   pieWrap: { display: 'flex', gap: '12px', alignItems: 'center' },
@@ -869,72 +907,72 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: 'inset 0 0 0 1px rgba(15,23,42,0.1)',
+    boxShadow: `inset 0 0 0 1px ${palette.gridLineStrong}`,
   },
   pieCenter: {
     width: '64px',
     height: '64px',
     borderRadius: '50%',
-    background: '#f8fafc',
-    border: '1px solid #e2e8f0',
+    background: palette.surface,
+    border: `1px solid ${palette.border}`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '12px',
     fontWeight: '600',
-    color: '#111827',
+    color: palette.text,
     fontVariantNumeric: 'tabular-nums',
   },
   pieLegend: { display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 },
   pieLegendItem: { display: 'flex', alignItems: 'center', gap: '6px' },
   pieSwatch: { width: '10px', height: '10px', borderRadius: '2px' },
-  pieLegendLabel: { fontSize: '11px', color: '#6b7280', width: '70px' },
-  pieLegendValue: { fontSize: '11px', color: '#111827', fontVariantNumeric: 'tabular-nums' },
+  pieLegendLabel: { fontSize: '11px', color: palette.textMuted, width: '70px' },
+  pieLegendValue: { fontSize: '11px', color: palette.text, fontVariantNumeric: 'tabular-nums' },
   filterBar: { display: 'flex', gap: '10px', marginBottom: '15px' },
-  formCard: { border: '1px solid #eee', borderRadius: '8px', padding: '15px', marginBottom: '15px', background: '#fafafa' },
-  formTitle: { fontSize: '14px', fontWeight: '600', marginBottom: '10px', color: '#444' },
+  formCard: { border: `1px solid ${palette.border}`, borderRadius: '8px', padding: '15px', marginBottom: '15px', background: palette.surface },
+  formTitle: { fontSize: '14px', fontWeight: '600', marginBottom: '10px', color: palette.textSecondary },
   formGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px', alignItems: 'center' },
-  formInput: { padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '13px', width: '100%' },
-  formSelect: { padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '13px', width: '100%' },
+  formInput: { padding: '8px 10px', border: `1px solid ${palette.borderStrong}`, borderRadius: '4px', fontSize: '13px', width: '100%' },
+  formSelect: { padding: '8px 10px', border: `1px solid ${palette.borderStrong}`, borderRadius: '4px', fontSize: '13px', width: '100%' },
   formActions: { display: 'flex', gap: '8px', alignItems: 'center' },
   searchInput: {
-    padding: '8px 12px', border: '1px solid #ddd', borderRadius: '4px', flex: 1,
+    padding: '8px 12px', border: `1px solid ${palette.borderStrong}`, borderRadius: '4px', flex: 1,
     fontSize: '14px',
   },
-  select: { padding: '8px 12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px' },
+  select: { padding: '8px 12px', border: `1px solid ${palette.borderStrong}`, borderRadius: '4px', fontSize: '14px' },
   table: { width: '100%', borderCollapse: 'collapse', fontSize: '13px' },
-  th: { textAlign: 'left', padding: '10px', background: '#f5f5f5', borderBottom: '2px solid #ddd', fontWeight: '600' },
-  td: { padding: '10px', borderBottom: '1px solid #eee' },
+  th: { textAlign: 'left', padding: '10px', background: palette.surfaceAlt, borderBottom: `2px solid ${palette.borderStrong}`, fontWeight: '600', color: palette.text },
+  td: { padding: '10px', borderBottom: `1px solid ${palette.border}` },
   tr: { transition: 'background 0.2s' },
   badge: { padding: '2px 8px', borderRadius: '12px', color: '#fff', fontSize: '11px', fontWeight: '600' },
   btnSuccess: {
-    padding: '5px 10px', background: '#4caf50', color: '#fff', border: 'none',
+    padding: '5px 10px', background: palette.success, color: '#fff', border: 'none',
     borderRadius: '4px', cursor: 'pointer', marginRight: '5px', fontSize: '12px',
   },
   btnInfo: {
-    padding: '5px 10px', background: '#2196f3', color: '#fff', border: 'none',
+    padding: '5px 10px', background: palette.info, color: '#fff', border: 'none',
     borderRadius: '4px', cursor: 'pointer', marginRight: '5px', fontSize: '12px',
   },
   btnWarning: {
-    padding: '5px 10px', background: '#ff9800', color: '#fff', border: 'none',
+    padding: '5px 10px', background: palette.warning, color: '#fff', border: 'none',
     borderRadius: '4px', cursor: 'pointer', marginRight: '5px', fontSize: '12px',
   },
   btnDanger: {
-    padding: '5px 10px', background: '#f44336', color: '#fff', border: 'none',
+    padding: '5px 10px', background: palette.danger, color: '#fff', border: 'none',
     borderRadius: '4px', cursor: 'pointer', marginRight: '5px', fontSize: '12px',
   },
   postCard: {
-    border: '1px solid #eee', borderRadius: '8px', padding: '15px', marginBottom: '15px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+    border: `1px solid ${palette.border}`, borderRadius: '8px', padding: '15px', marginBottom: '15px',
+    boxShadow: `0 1px 4px ${palette.shadowLight}`,
   },
   postHeader: { display: 'flex', justifyContent: 'space-between', marginBottom: '10px' },
-  postTime: { color: '#999', fontSize: '12px' },
+  postTime: { color: palette.textFaint, fontSize: '12px' },
   postImage: { maxWidth: '300px', maxHeight: '200px', borderRadius: '4px', marginBottom: '10px' },
-  postDesc: { color: '#333', marginBottom: '10px' },
+  postDesc: { color: palette.text, marginBottom: '10px' },
   postActions: { display: 'flex', gap: '8px' },
   nsfwWarning: {
-    background: '#ffebee', color: '#c62828', padding: '8px 12px', borderRadius: '4px',
+    background: palette.nsfwBg, color: palette.nsfwText, padding: '8px 12px', borderRadius: '4px',
     marginBottom: '10px', fontSize: '13px',
   },
-  emptyText: { textAlign: 'center', color: '#999', padding: '30px' },
+  emptyText: { textAlign: 'center', color: palette.textFaint, padding: '30px' },
 }

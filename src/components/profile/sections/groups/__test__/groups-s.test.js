@@ -14,7 +14,7 @@ describe('UserGroups Component', () => {
   it('should match snapshot', () => {
     const tree = create(
       <Provider store={mockStore}>
-        <UserGroups param="takkar" />
+        <UserGroups param="gangstagram" />
       </Provider>
     ).toJSON()
     expect(tree).toMatchSnapshot()

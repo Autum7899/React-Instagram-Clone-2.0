@@ -1,8 +1,3 @@
-/**
- * @author Faiyaz Shaikh <www.shtakkar@gmail.com>
- * GitHub repo: https://github.com/yTakkar/React-Instagram-Clone-2.0
- */
-
 import * as fn from '../utils/utils'
 import * as User from '../utils/user-system-utils'
 import Notify from 'handy-notification'

@@ -14,7 +14,7 @@ describe('Followings Component', () => {
   it('should match snapshot', () => {
     const tree = create(
       <Provider store={mockStore}>
-        <Followings param="takkar" />
+        <Followings param="gangstagram" />
       </Provider>
     ).toJSON()
     expect(tree).toMatchSnapshot()

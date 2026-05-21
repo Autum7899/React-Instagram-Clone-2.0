@@ -5,7 +5,7 @@ const app = require('express').Router(),
   mail = require('../../../config/Mail')
 
 // RETURNS THE COUNT OF A GIVEN FIELD SUCH.
-// EG. POST('/api/what-exists', { what: 'username', value: 'Takkar' })
+// EG. POST('/api/what-exists', { what: 'username', value: 'Gangstagram' })
 app.post('/what-exists', async (req, res) => {
   let { what, value } = req.body
   let s = await db.query(
