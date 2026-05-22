@@ -24,18 +24,18 @@ files.forEach(file => {
     let original = content;
 
     // Remove the JSDoc header with the developer's name
-    const headerRegex = /\/\*\*\r?\n \* @author Gangstagram Team <www\.shgangstagram@gmail\.com>[\s\S]*?\*\/\r?\n\r?\n?/g;
+    const headerRegex = /\/\*\*\r?\n \* @author Vsocial Team <www\.shvsocial@gmail\.com>[\s\S]*?\*\/\r?\n\r?\n?/g;
     content = content.replace(headerRegex, '');
     
     // Replace names and emails
-    content = content.replace(/Gangstagram/g, 'Gangstagram');
-    content = content.replace(/Gangstagram/g, 'Gangstagram');
-    content = content.replace(/gangstagram/g, 'gangstagram');
-    content = content.replace(/Gangstagram Team/g, 'Gangstagram Team');
-    content = content.replace(/Gangstagram/gi, 'Gangstagram');
-    content = content.replace(/www\.shgangstagram@gmail\.com/g, 'contact@gangstagram.com');
-    content = content.replace(/_Gangstagram_shaikh/g, 'gangstagram');
-    content = content.replace(/Shaikh-Gangstagram/g, 'Gangstagram');
+    content = content.replace(/Vsocial/g, 'Vsocial');
+    content = content.replace(/Vsocial/g, 'Vsocial');
+    content = content.replace(/vsocial/g, 'vsocial');
+    content = content.replace(/Vsocial Team/g, 'Vsocial Team');
+    content = content.replace(/Vsocial/gi, 'Vsocial');
+    content = content.replace(/www\.shvsocial@gmail\.com/g, 'contact@vsocial.com');
+    content = content.replace(/_Vsocial_shaikh/g, 'vsocial');
+    content = content.replace(/Shaikh-Vsocial/g, 'Vsocial');
 
     if (content !== original) {
       fs.writeFileSync(file, content, 'utf8');

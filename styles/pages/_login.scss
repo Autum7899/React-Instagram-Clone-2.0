@@ -53,16 +53,25 @@
       border-radius: 3px;
       font-size: 14px;
       margin-right: 5px;
-      color: #3d464d;
+      color: $d_light;
       background: $ff;
+      transition: all 0.2s ease-in-out;
 
       & a[href='help']{ margin-right: 0px; }
 
       & .index_header > .right > a[href="about"]{ margin-right: 5px; }
 
-      &:hover{ background: $second_border; }
+      &:hover{
+        background: $second_border;
+        color: $dark;
+        border-color: $pric;
+      }
 
-      &:focus{ background: $second_border; }
+      &:focus{
+        background: $second_border;
+        color: $dark;
+        border-color: $pric;
+      }
 
     }
 

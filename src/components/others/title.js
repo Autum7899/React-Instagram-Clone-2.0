@@ -7,15 +7,15 @@ const Title = ({ value, un }) => {
   let user = un ? `(${un})` : ''
   let title =
     value == 'Home'
-      ? `${user} Gangstagram`
-      : `${user} ${value} • Gangstagram`
+      ? `${user} Vsocial`
+      : `${user} ${value} • Vsocial`
 
   return (
     <Helmet>
       <title>{title}</title>
       <meta
         name="description"
-        content="Gangstagram lets you capture, follow, like and share world's moments in a better way and tell your story with photos, messages, posts and everything in between!!"
+        content="Vsocial lets you capture, follow, like and share world's moments in a better way and tell your story with photos, messages, posts and everything in between!!"
         data-desc-src="react"
       />
     </Helmet>

@@ -13,7 +13,8 @@ export const translations = {
       editProfile: 'Edit profile',
       settings: 'Settings',
       adminDashboard: 'Admin dashboard',
-      logout: 'Log out'
+      logout: 'Log out',
+      adminLogout: 'Logout as admin'
     },
     messages: {
       onlineUsers: 'Online users',
@@ -43,7 +44,7 @@ export const translations = {
       noGroups: 'Sorry, no groups to explore!!'
     },
     header: {
-      search: 'Search Gangstagram',
+      search: 'Search Vsocial',
       settings: 'Settings',
       edit: 'Edit',
       help: 'Help',
@@ -78,7 +79,8 @@ export const translations = {
       editProfile: 'Chỉnh sửa hồ sơ',
       settings: 'Cài đặt',
       adminDashboard: 'Bảng quản trị',
-      logout: 'Đăng xuất'
+      logout: 'Đăng xuất',
+      adminLogout: 'Đăng xuất Admin'
     },
     messages: {
       onlineUsers: 'Người dùng trực tuyến',
@@ -108,7 +110,7 @@ export const translations = {
       noGroups: 'Xin lỗi, không có nhóm nào để khám phá!!'
     },
     header: {
-      search: 'Tìm kiếm Gangstagram',
+      search: 'Tìm kiếm Vsocial',
       settings: 'Cài đặt',
       edit: 'Chỉnh sửa',
       help: 'Trợ giúp',

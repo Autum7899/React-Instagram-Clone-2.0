@@ -102,6 +102,6 @@ describe('User config tests', () => {
     expect(firstname).toBeString()
     expect(surname).toBeString()
     expect(firstname).toEqual('iam_')
-    expect(surname).toEqual('gangstagram')
+    expect(surname).toEqual('vsocial')
   })
 })

@@ -10,8 +10,8 @@ describe('db file tests', () => {
     ])
     expect(query[0]).toBeObject()
     expect(query[0]).toContainEntries([
-      ['email', 'gangstagram@gmail.com'],
-      ['username', 'gangstagram'],
+      ['email', 'vsocial@gmail.com'],
+      ['username', 'vsocial'],
     ])
   })
 

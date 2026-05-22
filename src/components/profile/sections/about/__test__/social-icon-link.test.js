@@ -6,7 +6,7 @@ describe('SocialIconLink Component', () => {
   it('should match snapshot', () => {
     const tree = create(
       <SocialIconLink
-        value="https://www.instagram.com/_Gangstagram_shaikh"
+        value="https://www.instagram.com/_Vsocial_shaikh"
         label="instagram"
       />
     ).toJSON()

@@ -19,7 +19,7 @@ const SideBar = ({ uc, un, lang, dispatch }) => {
     e.preventDefault()
     await post('/api/admin-logout')
     Notify({
-      value: t(lang, 'sidebar', 'logout'),
+      value: t(lang, 'sidebar', 'adminLogout'),
       done: () => location.reload(),
     })
   }
@@ -57,9 +57,9 @@ const SideBar = ({ uc, un, lang, dispatch }) => {
             <SidebarLink link="/admin-dashboard" label={t(lang, 'sidebar', 'adminDashboard')} />
           )}
           <li>
-            {isAdmin() ? (
+             {isAdmin() ? (
               <a href="#" className="admin-logout" onClick={adminLogout}>
-                {t(lang, 'sidebar', 'logout')}
+                {t(lang, 'sidebar', 'adminLogout')}
               </a>
             ) : (
               <NavLink

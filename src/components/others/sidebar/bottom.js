@@ -4,7 +4,7 @@ import MaterialIcon from '../icons/material-icon'
 import { connect } from 'react-redux'
 import { setLanguage } from '../../../actions/language'
 
-class SidebarBottom extends Component {
+export class SidebarBottom extends Component {
   state = {
     showOptions: false,
   }

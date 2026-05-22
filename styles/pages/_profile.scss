@@ -227,11 +227,14 @@
       border-radius: 2px !important;
       background: transparent !important;
       outline: none;
-      color: #3d464d;
-      border: 1px solid #dccccc !important;
+      color: $d_light;
+      border: 1px solid $ee !important;
+      transition: all 0.2s ease;
 
       &:hover{
         background: $fb !important;
+        color: $dark;
+        border-color: $pric !important;
       }
 
     }

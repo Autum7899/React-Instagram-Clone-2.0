@@ -5,10 +5,10 @@ import RequiredInputs from '../required-inputs'
 describe('Required-fields Component', () => {
   const props = {
     fields: {
-      username: 'gangstagram',
+      username: 'vsocial',
       firstname: 'iam_',
-      surname: 'Gangstagram',
-      email: 'gangstagram@gmail.com',
+      surname: 'Vsocial',
+      email: 'vsocial@gmail.com',
     },
     change: jest.fn(),
   }

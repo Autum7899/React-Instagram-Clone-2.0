@@ -12,7 +12,7 @@ describe('ImageTheatre Component', () => {
     const tree = create(
       <ImageTheatreInfo
         showInfo
-        username="gangstagram"
+        username="vsocial"
         link="/"
         time="1518972814710"
       />

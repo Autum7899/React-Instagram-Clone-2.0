@@ -15,8 +15,8 @@ describe('Profile Component', () => {
 
   const props = {
     match: {
-      params: { username: 'gangstagram' },
-      url: '/profile/gangstagram',
+      params: { username: 'vsocial' },
+      url: '/profile/vsocial',
     },
   }
 

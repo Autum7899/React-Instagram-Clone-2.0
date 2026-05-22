@@ -15,8 +15,8 @@ describe('GrpAboutSection Component', () => {
       <GrpAboutSection
         type="link"
         label="Group created by"
-        value="gangstagram"
-        url="/profile/gangstagram"
+        value="vsocial"
+        url="/profile/vsocial"
       />
     ).toJSON()
     expect(tree).toMatchSnapshot()
