@@ -5,7 +5,7 @@ const app = require('express').Router(),
   Group = require('../../../config/Group'),
   User = require('../../../config/User'),
   root = process.cwd(),
-  { createReadStream, createWriteStream, mkdir } = require('fs'),
+  { createReadStream, createWriteStream, mkdir, existsSync } = require('fs'),
   { promisify } = require('util')
 
 // CREATE GROUP [REQ = NAME, BIO]
@@ -29,15 +29,18 @@ app.post('/create-group', async (req, res) => {
         created: new Date().getTime(),
       },
       { affectedRows, insertId } = await db.query(
-        'INSERT INTO \`groups\` SET ?',
+        'INSERT INTO `groups` SET ?',
         group
       ),
       makeDir = promisify(mkdir)
 
     if (affectedRows == 1) {
-      await makeDir(`${root}/dist/groups/${insertId}`)
+      let groupDir = `${root}/dist/groups/${insertId}`
+      if (!existsSync(groupDir)) {
+        await makeDir(groupDir)
+      }
       createReadStream(`${root}/dist/images/wheel.jpg`).pipe(
-        createWriteStream(`${root}/dist/groups/${insertId}/avatar.jpg`)
+        createWriteStream(`${groupDir}/avatar.jpg`)
       )
 
       let member = {

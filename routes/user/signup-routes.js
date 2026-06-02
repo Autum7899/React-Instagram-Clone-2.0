@@ -19,10 +19,13 @@ app.get('/signup', mw.NotLoggedIn, (req, res) => {
 
 const sendMailAndcreateDir = async (insertId, username, email, res, token, role) => {
   let mkdir = promisify(fs.mkdir)
+  let userDir = `${dir}/dist/users/${insertId}`
 
-  await mkdir(`${dir}/dist/users/${insertId}`)
+  if (!fs.existsSync(userDir)) {
+    await mkdir(userDir)
+  }
   fs.createReadStream(`${dir}/dist/images/spacecraft.jpg`).pipe(
-    fs.createWriteStream(`${dir}/dist/users/${insertId}/avatar.jpg`)
+    fs.createWriteStream(`${userDir}/avatar.jpg`)
   )
 
   let url = `http://localhost:${
